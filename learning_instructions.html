@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Phase Instructions</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        #next-button {
+            margin-top: 20px;
+        }
+    </style>
+    	<script src="jspsych/jspsych.js"></script>
+    	<script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    	<script src="jspsych/dist/plugin-preload.js"></script>
+    	<script src="jspsych/dist/plugin-html-audio-response.js"></script>
+		<script src="jspsych/dist/plugin-image-button-response.js"></script>
+		<script src="jspsych/dist/plugin-html-button-response.js"></script>
+		<script src="jspsych/dist/jspsych-instructions.js"></script>
+		<script src="jspsych/dist/jspsych-call-function.js"></script>
+		<script src="jspsych/dist/plugin-initialize-microphone.js"></script>
+		<script src="jspsych/dist/plugin-instructions.js"></script>
+		<script src="jatos.js"></script>
+</head>
+<body>
+    <!-- <div class="container">
+        <h2>Learning Phase</h2>
+        <p>Great! Now, that you know what each speaker sounds like, we will start the learning phase. <br> You will be learning the names for 11 other objects in this phase. You will be able to hear each word 8 times, and you can choose who you want to hear it from each time. The speaker icons will be in the same place, so you can know that the yellow speaker icon from the previous part is the same speaker as the yellow speaker icon here. <br> On each trial, click one of the speaker icons. It will be highlighted in yellow, and you will hear what the object is called by that speaker. Once the yellow border goes away, you can select the next speaker. <br> <strong>Remember that your job is to learn what each word means, and also how to say the word yourself, and you can hear the word 8 times from any combination of speakers. </strong> <br> In the left hand corner, you'll see a running count of how many times you have already heard that word. Once that count reaches 8, you will see a new picture <br> Click "Next" below to start the experiment. </p>
+        <button id="next-button">Next</button> -->
+   <!-- </div> -->
+    <script>
+
+function startExperiment() {
+
+jsPsychInstance = initJsPsych({
+	experiment_width: 750,
+	on_trial_start: function() {
+		var id = jatos.urlQueryParameters.id;
+		console.log(id);
+		jsPsychInstance.data.addProperties({id: id});
+		jatos.studySessionData["id"] = id;
+	},
+override_safe_mode: true
+});
+
+
+var timeline = [];
+
+
+
+var instructions = {
+		type: jsPsychInstructions,
+	pages: [
+	'Great! Now, that you know what each speaker sounds like, we will start the learning phase.',
+	'You will be learning the names for 11 other objects in this phase. You will be able to hear each word 8 times, and you can choose who you want to hear it from each time. The speaker icons will be in the same place, so you can know that the yellow speaker icon from the previous part is the same speaker as the yellow speaker icon here. ',
+	'On each trial, click on the speaker icon you want to hear the word from. Once you click on it, it will be highlighted by a yellow border, and you will hear what the object is called by that speaker.',
+	'Once the yellow border goes away, you can select the next speaker (remember, you can select the same speaker multiple times)',
+	'<strong>Remember, your job is to learn what each word means, and also how to say the word yourself. You will hear each word 8 times, and can choose any combination of speakers that you think will lead to the best learning</strong>',
+	'In the left hand corner, you will see a running count of how many times you have already heard that word. Once that count reaches 8, you will see a new picture',
+	'After you have learned all of the words, you will be tested on how to say the words, and on what they mean',
+	'Click "Next" below to start this portion of the experiment',
+	],
+	show_clickable_nav: true,
+	on_finish: function() {
+		var resultData = jsPsychInstance.data.get().json();
+		jatos.startNextComponent(resultData);
+	}
+};
+timeline.push(instructions)
+
+
+jatos.onLoad(function() {
+	subjectID = jatos.studyResultId;
+	jsPsychInstance.run(timeline);
+// on_close: () => jatos.endStudy(jsPsych.data.get().json());
+// on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+});
+}
+
+document.addEventListener('DOMContentLoaded', startExperiment)
+
+    </script>
+</body>
+</html>

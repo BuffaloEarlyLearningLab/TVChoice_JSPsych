@@ -1,0 +1,65 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.speakers {
+    position: absolute;
+    z-index: 2;
+    width: 800px;
+    height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.speaker {
+    position: absolute;
+    width: 70px;
+    height: 70px; 
+    cursor: pointer; 
+}
+
+.speaker.active-speaker {
+    border: 2px solid yellow;
+    box-shadow: 0px 0px 10px 3px yellow;
+}
+
+.speaker:nth-child(1) { transform: translate(0px, -320px); }
+.speaker:nth-child(2) { transform: rotate(45deg) translate(0px, -320px); }
+.speaker:nth-child(3) { transform: rotate(90deg) translate(0px, -320px); }
+.speaker:nth-child(4) { transform: rotate(135deg) translate(0px, -320px); } 
+.speaker:nth-child(5) { transform: rotate(180deg) translate(0px, -320px); } 
+.speaker:nth-child(6) { transform: rotate(225deg) translate(0px, -320px); } 
+.speaker:nth-child(7) { transform: rotate(270deg) translate(0px, -320px); }
+.speaker:nth-child(8) { transform: rotate(315deg) translate(0px, -320px); }
+
+.center-image {
+    position: absolute;
+    left: 62%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.center-image img {
+    max-width: 40%;
+    height: auto;
+}
+
+.selection-counter {
+    position: fixed; /* or absolute, depending on your layout */
+    top: 20px; /* Adjust as necessary */
+    left: 20px; /* Adjust as necessary */
+    z-index: 3000; /* Ensures it stays on top of other elements */
+    background-color: #fff; /* Background color for visibility */
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: adds a subtle shadow for better visibility */
+    font-size: 18px; /* Adjust as necessary */
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Familiarization Phase Instructions</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        #next-button {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+	<script src="jatos.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Familiarization Phase</h2>
+		<p>Great! Now, let's begin with the experiment. First, we will start with a training where you hear what each speaker sounds like. <br>You will see a picture of a clown in the middle, and hear each speaker say the word meaning “clown” in their language. To get used to how you will select who to hear a word from during the experiment, you will see one of the speaker icons light up, you will click on it, and then you will hear the word. <br> After that speaker icon resets (there is no longer the yellow border around it), the next speaker icon will light up, you will click on it, and hear the word. You’ll continue this for all 8 speaker icons. You will not be tested on this word. <br> <br> </p>
+        <button id="next-button">Next</button>
+    </div>
+    <script>
+		jatos.onLoad(function() {
+			document.getElementById("next-button").onclick = function() {
+            // window.location.href = 'audio_test.html';
+			jatos.startNextComponent();
+        };
+
+		});
+    </script>
+</body>
+</html>

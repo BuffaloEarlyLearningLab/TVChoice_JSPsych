@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Demo</title>
+    	<link rel="stylesheet" href="styles.css">
+    	<script src="jspsych/jspsych.js"></script>
+    	<script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    	<script src="jspsych/dist/plugin-preload.js"></script>
+    	<script src="jspsych/dist/plugin-html-audio-response.js"></script>
+		<script src="jspsych/dist/plugin-image-button-response.js"></script>
+		<script src="jspsych/dist/plugin-html-button-response.js"></script>
+		<script src="jspsych/dist/jspsych-instructions.js"></script>
+		<script src="jspsych/dist/jspsych-call-function.js"></script>
+		<script src="jspsych/dist/plugin-initialize-microphone.js"></script>
+		<script src="jspsych/dist/plugin-instructions.js"></script>
+		<script src="jatos.js"></script>
+	</head>
+	<style>
+		img {
+  		width: 400px;
+  		height: auto;
+		}
+	</style>
+	<body></body>
+
+	<script>
+	
+	function startExperiment() {
+
+		jsPsychInstance = initJsPsych({
+		on_trial_start: function() {
+			var id = jatos.urlQueryParameters.id;
+			console.log(id);
+			jsPsychInstance.data.addProperties({id: id});
+			jatos.studySessionData.id = id;
+		},
+        override_safe_mode: true
+    });
+
+
+		//var participantId = `Participant_${new Date().getTime()}`;
+		jsPsychInstance.data.addProperties({id: jatos.studySessionData.id});
+
+    	var timeline = [];
+
+		// var welcome = {
+		// 	type: jsPsychHtmlKeyboardResponse,
+		// 	stimulus: "Welcome to the experiment, press any key to continue",
+		// 	data: { image_type: 'A' }
+		// };
+		// timeline.push(welcome)
+
+		var instructions = {
+   			 type: jsPsychInstructions,
+    		pages: [
+    		'Welcome to the first test phase. Click next to begin.',
+    		'You will be seeing a picture on the screen, and your job is to name the picture using the word you learned during the experiment',
+			'First, you will see one picture. Take a second to think about what the picture is called',
+    		'Once you are ready, click the "Record" button',
+			'The picture will change to one with a border, at which point you should speak the word for the picture',
+			'Once you are done, press "Stop" and move on to the next image',
+			'You will not be able to rerecord, so make sure you are ready to say the word you want for that picture once you hit Record',
+			'You will be tested on each word twice',
+			'You will need to initiatilize your microphone to allow us to record your responses on the next screen'
+    		],
+    		show_clickable_nav: true
+		};
+		timeline.push(instructions)
+
+		var initialize_microphone_trial = {
+    		type: jsPsychInitializeMicrophone
+		};
+
+		function save_file_to_jatos(data) {
+  			return new Promise(function (resolve) {
+    		const blob = new Blob(data, { type: 'audio/webm; codecs=opus' });
+    		// create URL from the audio blob, which is used to replay the audio file (if allow_playback is true)
+    		let url = URL.createObjectURL(blob);
+    		// use the trial number as the file name
+    		var filename = trial_count.toString() + ".webm";
+    		jatos.uploadResultFile(blob, filename);
+    		// need to pass an object with the URL and data string to the onRecordingFinish function
+    		// - url allows the audio to be replayed if playback is true
+    		// - str is used to either save the audio data as base64 string or save the filename to the jsPsych trial data
+    		var trial_data = { url: url, str: filename };
+    		resolve(trial_data);
+  		});
+		}
+
+		timeline.push(initialize_microphone_trial)
+
+		var item_pics_naming = [
+		{ item: 'components/pictures/karve.jpg', block: 'namin_trial', object: 'karve', stim_num: '1', data: {test_part: 'naming', object: '', file: 'karve.png', label: 'karve', n: '1'}},
+		{ item: 'components/pictures/kiskis.jpg',block: 'namin_trial', object: 'kiskis', stim_num: '2', data: {test_part: 'naming', object: '', file: 'kiskis.png', label: 'kiskis', n: '2'}},
+		{ item: 'components/pictures/knyga.jpg', block: 'namin_trial',object: 'knyga', stim_num: '3', data: {test_part: 'naming', object: '', file: 'knyga.png', label: 'knyga', n: '3'}},
+		{ item: 'components/pictures/medis.jpg', block: 'namin_trial',object: 'medis', stim_num: '4', data: {test_part: 'naming', object: '', file: 'medis.png', label: 'medis', n: '4'}},
+		{ item: 'components/pictures/meska.jpg', block: 'namin_trial',object: 'meska', stim_num: '5', data: {test_part: 'naming', object: '', file: 'meska.png', label: 'meska', n: '5'}},
+		{ item: 'components/pictures/namas.jpg', block: 'namin_trial',object: 'namas', stim_num: '6', data: {test_part: 'naming', object: '', file: 'namas.png', label: 'namas', n: '6'}},
+		{ item: 'components/pictures/raktas.jpg', block: 'namin_trial',object: 'raktas', stim_num: '7', data: {test_part: 'naming', object: '', file: 'raktas.png', label: 'raktas', n: '7'}},
+		{ item: 'components/pictures/tigras.jpg',block: 'namin_trial', object: 'tigras', stim_num: '8', data: {test_part: 'naming', object: '', file: 'tigras.png', label: 'tigras', n: '8'}},
+		{ item: 'components/pictures/tortas.jpg', block: 'namin_trial',object: 'tortas', stim_num: '9', data: {test_part: 'naming', object: '', file: 'tortas.png', label: 'tortas', n: '9'}},
+		{ item: 'components/pictures/vista.jpg', block: 'namin_trial',object: 'vista', stim_num: '10', data: {test_part: 'naming', object: '', file: 'vista.png', label: 'vista', n: '10'}},
+		{ item: 'components/pictures/voras.jpg', block: 'namin_trial',object: 'voras', stim_num: '11', data: {test_part: 'naming', object: '', file: 'voras.png', label: 'voras', n: '11'}},
+		{ item: 'components/pictures/karve.jpg', block: 'namin_trial',object: 'karve', stim_num: '12', data: {test_part: 'naming', object: '', file: 'karve.png', label: 'karve', ID: '12'}},
+		{ item: 'components/pictures/kiskis.jpg', block: 'namin_trial',object: 'kiskis', stim_num: '13', data: {test_part: 'naming', object: '', file: 'kiskis.png', label: 'kiskis', ID: '13'} },
+		{ item: 'components/pictures/knyga.jpg', block: 'namin_trial',object: 'knyga', stim_num: '14', data: {test_part: 'naming', object: '', file: 'knyga.png', label: 'knyga', ID: '14'}},
+		{ item: 'components/pictures/medis.jpg', block: 'namin_trial',object: 'medis' , stim_num: '15', data: {test_part: 'naming', object: '', file: 'medis.png', label: 'medis', ID: '15'}},
+		{ item: 'components/pictures/meska.jpg', block: 'namin_trial',object: 'meska', stim_num: '16', data: {test_part: 'naming', object: '', file: 'meska.png', label: 'meska', ID: '16'}},
+		{ item: 'components/pictures/namas.jpg', block: 'namin_trial',object: 'namas' , stim_num: '17', data: {test_part: 'naming', object: '', file: 'namas.png', label: 'namas', ID: '17'}},
+		{ item: 'components/pictures/raktas.jpg', block: 'namin_trial',object: 'raktas', stim_num: '18', data: {test_part: 'naming', object: '', file: 'raktas.png', label: 'raktas', ID: '18'}},
+		{ item: 'components/pictures/tigras.jpg', block: 'namin_trial',object: 'tigras' , stim_num: '19', data: {test_part: 'naming', object: '', file: 'tigras.png', label: 'tigras', ID: '19'}},
+		{ item: 'components/pictures/tortas.jpg', block: 'namin_trial',object: 'tortas', stim_num: '20', data: {test_part: 'naming', object: '', file: 'tortas.png', label: 'tortas', ID: '20'}},
+		{ item: 'components/pictures/vista.jpg', block: 'namin_trial',object: 'vista' , stim_num: '21', data: {test_part: 'naming', object: '', file: 'vista.png', label: 'vista', ID: '21'}},
+		{ item: 'components/pictures/voras.jpg', block: 'namin_trial',object: 'voras' , stim_num: '22', data: {test_part: 'naming', object: '', file: 'voras.png', label: 'voras', ID: '22'}},
+		];
+
+		var trial_prep = {
+   			type: jsPsychHtmlButtonResponse,
+			stimulus: function(){
+                 var html = `
+				 <img src="${jsPsychInstance.timelineVariable('item')}">`;`</p>`;
+            return html;
+            },
+    		choices: ['Record'],
+    		prompt: "<p>Click on the 'Record' button when you are ready to record the name of this image.</p>",
+		};
+
+    	var trial = {
+        	type: jsPsychHtmlAudioResponse,
+        	//stimulus: 'Speak the name of the image.',
+            stimulus: function(){
+                 var html = `
+				 <img src="${jsPsychInstance.timelineVariable('item')}" border = "2"'>`;`</p>`;
+            return html;
+            },
+        	allow_playback: false,
+			show_done_button: true,
+			stimulus_duration: null,
+			recording_duration: 10000,
+			done_button_label: 'Stop',
+			postprocessing: save_file_to_jatos,
+			//data: {trial_kind: "naming", item: jsPsych.timelineVariable('item')},
+        	//on_finish: function() {
+			//	jatos.appendResultData()
+           	// },
+       	};
+
+		var naming_procedure = {
+			timeline: [trial_prep, trial],
+			timeline_variables: item_pics_naming,
+			// [
+			// {item: 'components/pictures/karve.jpg', block: 'naming_trial', object:'car', stim_num: '1', data: {test_part: 'naming_trial', object:'', file: 'karve.jpg', pic: 'car', ID: '1'}},
+			// {item: 'components/pictures/kiskis.jpg', block: 'naming_trial', object:'elephant', stim_num: '2', data: {test_part: 'naming_trial', object:'', file: 'kiskis.jpg',  pic: 'elephant', ID: '2'}},
+			// {item: 'components/pictures/knyga.jpg', block: 'naming_trial', object:'house', stim_num: '3', data: {test_part: 'naming_trial', object:'', file: 'knyga.jpg', pic: 'house', ID: '3'}},
+			// {item: 'components/pictures/medis.jpg', block: 'naming_trial', object:'flower', stim_num: '4', data: {test_part: 'naming_trial', object:'', file: 'medis.jpg', pic: 'flower',  ID: '4'}}
+			// ],
+			randomize_order:true,
+			on_timeline_finish: function() {
+        		var resultData = jsPsychInstance.data.get().json();
+				jatos.startNextComponent(resultData);
+    		}
+		};
+
+		timeline.push(naming_procedure)
+
+
+		jatos.onLoad(function() {
+			subjectID = jatos.studyResultId;
+			jsPsychInstance.run(timeline);
+		// on_close: () => jatos.endStudy(jsPsych.data.get().json());
+		// on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', startExperiment)
+    
+	</script>
+
+</html>

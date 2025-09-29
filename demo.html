@@ -1,0 +1,97 @@
+<html>
+<head>
+    <title>Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+	<script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+	<script src="jspsych/dist/plugin-instructions.js"></script>
+	<script src="jatos.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Experiment</h1>
+        In this experiment you will learn names for objects in another language. For every word you have to learn, you will have a choice of who you hear it from. There are 8 different speakers you can hear the word from, and you will hear the word 8 times, but you can select if you want to hear it from the same person multiple times or from different people, or some mix of the two. Your job is to learn the meaning of each word, and to produce the word yourself.   
+        <br><br><br>
+        You will need to hear audio during the experiment, so make sure you are using an up-to-date browser (Firefox, Chrome, or Safari should all be good options). First, we will check that your audio is working properly. We will play you simple words and ask you to type in what you hear. Pay close attention - we will only accept HITs in which people pass this initial audio test. Make sure your audio is turned on, then click NEXT to start the audio test!'
+        <br><br>
+        <button id="next-button">Next</button>
+    </div>
+
+    <script>
+
+	// function startExperiment() {
+
+	// 	jsPsychInstance = initJsPsych({
+    //     	override_safe_mode: true
+    // 	});
+
+	// 	var timeline = [];
+
+	// 	// Grab the SONA code
+	// 	//var uPars = jatos.urlQueryParameters;
+	// 	//var id = typeof(uPars.id)!='undefined' ? uPars.id : 'none';
+	// 	var id = `Participant_${new Date().getTime()}`;
+	// 	jsPsychInstance.data.addProperties({id: id});
+
+	// 	jatos.studySessionData.id = id;
+
+	// 	var instructions = {
+   	// 		 type: jsPsychInstructions,
+    // 		pages: [
+    // 		'Welcome to our experiment! Click next to begin.',
+    // 		'In this experiment you will learn names for objects in another language.',
+	// 		'For every word you have to learn, you will have a choice of who you hear it from. There are 8 different speakers you can hear the word from, and you will hear the word 8 times, but you can select if you want to hear it from the same person multiple times or from different people, or some mix of the two.',
+	// 		'Your job is to learn the meaning of each word, and to produce the word yourself.',
+    // 		'You will need to hear audio during the experiment, so make sure you are using an up-to-date browser (Firefox, Chrome, or Safari should all be good options).',
+	// 		'First, we will check that your audio is working properly. We will play you simple words and ask you to type in what you hear. ',
+	// 		'Pay close attention - we will only accept HITs in which people pass this initial audio test. Make sure your audio is turned on, then click NEXT to start the audio test!',
+    // 		],
+    // 		show_clickable_nav: true,
+	// 		on_timeline_finish: function() {
+    //     		var resultData = jsPsychInstance.data.get().csv();
+	// 			jatos.startNextComponent(resultData);
+    // 		}
+	// 	};
+	// 	timeline.push(instructions)
+
+	// 	jatos.onLoad(function() {
+	// 		subjectID = jatos.studySessionData.id;
+	// 		jsPsychInstance.run(timeline);
+	// 	 	//on_close: () => jatos.endStudy(jsPsychInstance.data.get().json());
+	// 	 	//on_finish: () => jatos.endStudy(jsPsychInstance.data.get().json())
+	// 	});
+	// }
+	// document.addEventListener('DOMContentLoaded', startExperiment)
+	
+
+		jatos.onLoad(function() {
+					//var uPars = jatos.urlQueryParameters;
+		//var id = typeof(uPars.id)!='undefined' ? uPars.id : 'none';
+		var id = `Participant_${new Date().getTime()}`;
+		jsPsychInstance.data.addProperties({id: id});
+
+		jatos.studySessionData.id = id;
+			document.getElementById("next-button").onclick = function() {
+            // window.location.href = 'audio_test.html';
+			jatos.startNextComponent();
+        };
+
+		});
+
+
+		// var trial = {
+  		// 	type: jsPsychHtmlButtonResponse,
+  		// 	stimulus: '<p style="font-size:48px; color:red;">GREEN</p>',
+  		// 	choices: ['Red', 'Green', 'Blue'],
+  		// 	prompt: "<p>What color is the ink?</p>"
+		// };
+
+		// var timeline = [];
+
+		// timeline.push(trial)
+
+    </script>
+</body>
+</html>
