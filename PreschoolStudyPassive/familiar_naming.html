@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Demo</title>
+    	<link rel="stylesheet" href="styles.css">
+    	<script src="jspsych/jspsych.js"></script>
+    	<script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    	<script src="jspsych/dist/plugin-preload.js"></script>
+    	<script src="jspsych/dist/plugin-html-audio-response.js"></script>
+		<script src="jspsych/dist/plugin-image-button-response.js"></script>
+		<script src="jspsych/dist/plugin-html-button-response.js"></script>
+		<script src="jspsych/dist/jspsych-instructions.js"></script>
+		<script src="jspsych/dist/jspsych-call-function.js"></script>
+		<script src="jspsych/dist/plugin-initialize-microphone.js"></script>
+		<script src="jspsych/dist/plugin-instructions.js"></script>
+		<script src="jatos.js"></script>
+	</head>
+	<style>
+		img {
+  		width: 400px;
+  		height: auto;
+		}
+	</style>
+	<body></body>
+
+	<script>
+	
+	function startExperiment() {
+
+		jsPsychInstance = initJsPsych({
+		on_trial_start: function() {
+			var id = jatos.urlQueryParameters.id;
+			console.log(id);
+			jsPsychInstance.data.addProperties({id: id});
+			jatos.studySessionData.id = id;
+		},
+        override_safe_mode: true
+    });
+
+
+		//var participantId = `Participant_${new Date().getTime()}`;
+		jsPsychInstance.data.addProperties({id: jatos.studySessionData.id});
+
+    	var timeline = [];
+
+		// var welcome = {
+		// 	type: jsPsychHtmlKeyboardResponse,
+		// 	stimulus: "Welcome to the experiment, press any key to continue",
+		// 	data: { image_type: 'A' }
+		// };
+		// timeline.push(welcome)
+
+		var instructions = {
+   			 type: jsPsychInstructions,
+    		pages: [
+    		'Familiar naming instructions'
+    		],
+    		show_clickable_nav: true
+		};
+		timeline.push(instructions)
+
+		var initialize_microphone_trial = {
+    		type: jsPsychInitializeMicrophone
+		};
+
+		function save_file_to_jatos(data) {
+  			return new Promise(function (resolve) {
+    		const blob = new Blob(data, { type: 'audio/webm; codecs=opus' });
+    		// create URL from the audio blob, which is used to replay the audio file (if allow_playback is true)
+    		let url = URL.createObjectURL(blob);
+    		// use the trial number as the file name
+    		var filename = trial_count.toString() + ".webm";
+    		jatos.uploadResultFile(blob, filename);
+    		// need to pass an object with the URL and data string to the onRecordingFinish function
+    		// - url allows the audio to be replayed if playback is true
+    		// - str is used to either save the audio data as base64 string or save the filename to the jsPsych trial data
+    		var trial_data = { url: url, str: filename };
+    		resolve(trial_data);
+  		});
+		}
+
+		timeline.push(initialize_microphone_trial)
+
+		var item_pics_naming = [
+		{ item: 'components/pictures/apple.jpg', block: 'fam_naming_trial', object: 'apple', stim_num: '1', data: {test_part: 'fam_naming', object: '', file: 'apple.jpg', label: 'apple', n: '1'}},
+		{ item: 'components/pictures/ball.jpg',block: 'fam_naming_trial', object: 'ball', stim_num: '2', data: {test_part: 'fam_naming', object: '', file: 'ball.jpg', label: 'ball', n: '2'}},
+		];
+
+		var trial_prep = {
+   			type: jsPsychHtmlButtonResponse,
+			stimulus: function(){
+                 var html = `
+				 <img src="${jsPsychInstance.timelineVariable('item')}">`;`</p>`;
+            return html;
+            },
+    		choices: ['Record'],
+    		prompt: "<p>Click on the 'Record' button when you are ready to record the name of this image.</p>",
+		};
+
+    	var trial = {
+        	type: jsPsychHtmlAudioResponse,
+        	//stimulus: 'Speak the name of the image.',
+            stimulus: function(){
+                 var html = `
+				 <img src="${jsPsychInstance.timelineVariable('item')}" border = "2"'>`;`</p>`;
+            return html;
+            },
+        	allow_playback: false,
+			show_done_button: true,
+			stimulus_duration: null,
+			recording_duration: 10000,
+			done_button_label: 'Stop',
+			postprocessing: save_file_to_jatos,
+			//data: {trial_kind: "naming", item: jsPsych.timelineVariable('item')},
+        	//on_finish: function() {
+			//	jatos.appendResultData()
+           	// },
+       	};
+
+		var naming_procedure = {
+			timeline: [trial_prep, trial],
+			timeline_variables: item_pics_naming,
+			// [
+			// {item: 'components/pictures/karve.jpg', block: 'naming_trial', object:'car', stim_num: '1', data: {test_part: 'naming_trial', object:'', file: 'karve.jpg', pic: 'car', ID: '1'}},
+			// {item: 'components/pictures/kiskis.jpg', block: 'naming_trial', object:'elephant', stim_num: '2', data: {test_part: 'naming_trial', object:'', file: 'kiskis.jpg',  pic: 'elephant', ID: '2'}},
+			// {item: 'components/pictures/knyga.jpg', block: 'naming_trial', object:'house', stim_num: '3', data: {test_part: 'naming_trial', object:'', file: 'knyga.jpg', pic: 'house', ID: '3'}},
+			// {item: 'components/pictures/medis.jpg', block: 'naming_trial', object:'flower', stim_num: '4', data: {test_part: 'naming_trial', object:'', file: 'medis.jpg', pic: 'flower',  ID: '4'}}
+			// ],
+			randomize_order:true,
+			on_timeline_finish: function() {
+        		var resultData = jsPsychInstance.data.get().json();
+				jatos.startNextComponent(resultData);
+    		}
+		};
+
+		timeline.push(naming_procedure)
+
+
+		jatos.onLoad(function() {
+			subjectID = jatos.studyResultId;
+			jsPsychInstance.run(timeline);
+		// on_close: () => jatos.endStudy(jsPsych.data.get().json());
+		// on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', startExperiment)
+    
+	</script>
+
+</html>

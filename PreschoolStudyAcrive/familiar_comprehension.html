@@ -1,0 +1,28 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Image Comprehension Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="imgstyle.css">
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+	<script src="jatos.js"></script>
+	<style> 
+	p.c {
+  		white-space: pre;
+	}
+</style>
+</head>
+<body>
+    <div id="instructionsDiv">
+    <!-- <h2>Image Comprehension Test</h2> -->
+    <p>Familiar comprehension instructions</p>
+    <button id="startBtn">Start Experiment</button> 
+    </div>
+    <div id="imagesContainer" class="images-grid" style="display: none;"> 
+    </div>
+    <audio id="labelAudio" src=""></audio>
+    <script src="familiar_comprehension.js"></script>
+</body>
+</html>

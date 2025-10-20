@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Demo</title>
+    	<link rel="stylesheet" href="styles.css">
+    	<script src="jspsych/jspsych.js"></script>
+    	<script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    	<script src="jspsych/dist/plugin-preload.js"></script>
+    	<script src="jspsych/dist/plugin-html-audio-response.js"></script>
+		<script src="jspsych/dist/plugin-image-button-response.js"></script>
+		<script src="jspsych/dist/plugin-html-button-response.js"></script>
+		<script src="jspsych/dist/jspsych-instructions.js"></script>
+		<script src="jspsych/dist/jspsych-call-function.js"></script>
+		<script src="jspsych/dist/plugin-initialize-microphone.js"></script>
+		<script src="jspsych/dist/plugin-instructions.js"></script>
+		<script src="jspsych/dist/plugin-fullscreen.js"></script>
+		<script src="jatos.js"></script>
+	</head>
+	<style>
+		img {
+  		width: 400px;
+  		height: auto;
+		}
+	</style>
+	<body></body>
+
+	<script>
+	
+	function startExperiment() {
+
+		jsPsychInstance = initJsPsych({
+			experiment_width: 750,
+			on_trial_start: function() {
+				var id = jatos.urlQueryParameters.id;
+				console.log(id);
+				jsPsychInstance.data.addProperties({id: id});
+				jatos.studySessionData["id"] = id;
+				var order_file = jatos.urlQueryParameters.order;
+				console.log(order_file);
+				jsPsychInstance.data.addProperties({order_file: order_file});
+				jatos.studySessionData["order_file"] = order_file;
+				var order = jatos.urlQueryParameters.order;
+				localStorage.setItem("order", order);
+				console.log("Order received: " + order);
+				jsPsychInstance.data.addProperties({order: order});
+				jatos.studySessionData["order"] = order;
+			},
+        override_safe_mode: true
+    	});
+
+		// Grab the SONA code
+		//console.log(jatos.urlQueryParameters);	
+		//var uPars = jatos.urlQueryParameters;
+		//console.log(uPars);
+		//var id = jatos.urlQueryParameters.id
+		//let id = jsPsychInstance.data.urlVariables()['id']
+		//var id = typeof(uPars.id)!='undefined' ? uPars.id : 'none';
+		//var id = uPars.id
+		// var id = `Participant_${new Date().getTime()}`;
+		//jsPsychInstance.data.addProperties({id: id});
+		//console.log(id);
+		//jatos.studySessionData.id = id;
+
+		//var participantId = `Participant_${new Date().getTime()}`;
+		//jsPsychInstance.data.addProperties({ID: participantId});
+
+    	var timeline = [];
+
+		// var welcome = {
+		// 	type: jsPsychHtmlKeyboardResponse,
+		// 	stimulus: "Welcome to the experiment, press any key to continue",
+		// 	data: { image_type: 'A' }
+		// };
+		// timeline.push(welcome)
+
+		var instructions = {
+   			 type: jsPsychInstructions,
+    		pages: [
+    		'Intro to speakers introduction',
+    		],
+    		show_clickable_nav: true,
+			on_finish: function() {
+        		var resultData = jsPsychInstance.data.get().json();
+				jatos.startNextComponent(resultData);
+    		}
+		};
+		timeline.push(instructions)
+
+
+		jatos.onLoad(function() {
+			subjectID = jatos.studyResultId;
+			jsPsychInstance.run(timeline);
+		// on_close: () => jatos.endStudy(jsPsych.data.get().json());
+		// on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+		});
+
+		jatos.onFinishComponent(function() {
+			jatos.studySessionData["order"] = jatos.urlQueryParameters.order;
+
+			jatos.submitResultData({}, function() {
+				console.log("Session data submitted and component finished.");
+				jatos.finishComponent();
+			});
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', startExperiment)
+    
+	</script>
+
+</html>

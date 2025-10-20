@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Familiarization Phase Instructions</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        #next-button {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+	<script src="jatos.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Familiarization Phase</h2>
+		<p> Familiarization Instructions </p>
+        <button id="next-button">Next</button>
+    </div>
+    <script>
+		jatos.onLoad(function() {
+			document.getElementById("next-button").onclick = function() {
+            // window.location.href = 'audio_test.html';
+			jatos.startNextComponent();
+        };
+
+		});
+    </script>
+</body>
+</html>
