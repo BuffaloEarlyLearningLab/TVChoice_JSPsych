@@ -7,8 +7,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Coodle",
+      "left_image": "2033-600",
       "center": "Toma",
-      "right": "Blicket"
+      "center_image": "2011-600",
+      "right": "Blicket",
+      "right_image": "2044b"
     },
     {
       "trial_number": 8,
@@ -17,8 +20,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Blicket",
+      "left_image": "2044b",
       "center": "Coodle",
-      "right": "Toma"
+      "center_image": "2033-600",
+      "right": "Toma",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 9,
@@ -27,8 +33,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Gasser",
+      "left_image": "2051b",
       "center": "Bosa",
-      "right": "Dax"
+      "center_image": "2039c",
+      "right": "Dax",
+      "right_image": "2052b"
     },
     {
       "trial_number": 10,
@@ -37,8 +46,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Toma",
+      "left_image": "2011-600",
       "center": "Blicket",
-      "right": "Coodle"
+      "center_image": "2044b",
+      "right": "Coodle",
+      "right_image": "2033-600"
     },
     {
       "trial_number": 11,
@@ -47,8 +59,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Dax",
+      "left_image": "2052b",
       "center": "Gasser",
-      "right": "Bosa"
+      "center_image": "2051b",
+      "right": "Bosa",
+      "right_image": "2039c"
     },
     {
       "trial_number": 12,
@@ -57,8 +72,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Bosa",
+      "left_image": "2039c",
       "center": "Dax",
-      "right": "Gasser"
+      "center_image": "2052b",
+      "right": "Gasser",
+      "right_image": "2051b"
     },
     {
       "trial_number": 13,
@@ -67,8 +85,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Coodle",
+      "left_image": "2033-600",
       "center": "Toma",
-      "right": "Blicket"
+      "center_image": "2011-600",
+      "right": "Blicket",
+      "right_image": "2044b"
     },
     {
       "trial_number": 14,
@@ -77,8 +98,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Gasser",
+      "left_image": "2051b",
       "center": "Bosa",
-      "right": "Dax"
+      "center_image": "2039c",
+      "right": "Dax",
+      "right_image": "2052b"
     },
     {
       "trial_number": 15,
@@ -87,8 +111,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Blicket",
+      "left_image": "2044b",
       "center": "Coodle",
-      "right": "Toma"
+      "center_image": "2033-600",
+      "right": "Toma",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 16,
@@ -97,8 +124,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Dax",
+      "left_image": "2052b",
       "center": "Gasser",
-      "right": "Bosa"
+      "center_image": "2051b",
+      "right": "Bosa",
+      "right_image": "2039c"
     },
     {
       "trial_number": 17,
@@ -107,8 +137,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Toma",
+      "left_image": "2011-600",
       "center": "Blicket",
-      "right": "Coodle"
+      "center_image": "2044b",
+      "right": "Coodle",
+      "right_image": "2033-600"
     },
     {
       "trial_number": 18,
@@ -117,8 +150,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Bosa",
+      "left_image": "2039c",
       "center": "Dax",
-      "right": "Gasser"
+      "center_image": "2052b",
+      "right": "Gasser",
+      "right_image": "2051b"
     }
   ],
   "test_order_2": [
@@ -129,8 +165,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Coodle",
+      "left_image": "2044b",
       "center": "Blicket",
-      "right": "Toma"
+      "center_image": "2011-600",
+      "right": "Toma",
+      "right_image": "2033-600"
     },
     {
       "trial_number": 8,
@@ -139,8 +178,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Gasser",
+      "left_image": "2052b",
       "center": "Dax",
-      "right": "Bosa"
+      "center_image": "2039c",
+      "right": "Bosa",
+      "right_image": "2051b"
     },
     {
       "trial_number": 9,
@@ -149,8 +191,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Bosa",
+      "left_image": "2051b",
       "center": "Gasser",
-      "right": "Dax"
+      "center_image": "2052b",
+      "right": "Dax",
+      "right_image": "2039c"
     },
     {
       "trial_number": 10,
@@ -159,8 +204,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Toma",
+      "left_image": "2033-600",
       "center": "Coodle",
-      "right": "Blicket"
+      "center_image": "2044b",
+      "right": "Blicket",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 11,
@@ -169,8 +217,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Blicket",
+      "left_image": "2011-600",
       "center": "Toma",
-      "right": "Coodle"
+      "center_image": "2033-600",
+      "right": "Coodle",
+      "right_image": "2044b"
     },
     {
       "trial_number": 12,
@@ -179,8 +230,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Dax",
+      "left_image": "2039c",
       "center": "Bosa",
-      "right": "Gasser"
+      "center_image": "2051b",
+      "right": "Gasser",
+      "right_image": "2052b"
     },
     {
       "trial_number": 13,
@@ -189,8 +243,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Coodle",
+      "left_image": "2044b",
       "center": "Blicket",
-      "right": "Toma"
+      "center_image": "2011-600",
+      "right": "Toma",
+      "right_image": "2033-600"
     },
     {
       "trial_number": 14,
@@ -199,8 +256,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Gasser",
+      "left_image": "2052b",
       "center": "Dax",
-      "right": "Bosa"
+      "center_image": "2039c",
+      "right": "Bosa",
+      "right_image": "2051b"
     },
     {
       "trial_number": 15,
@@ -209,8 +269,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Toma",
+      "left_image": "2033-600",
       "center": "Coodle",
-      "right": "Blicket"
+      "center_image": "2044b",
+      "right": "Blicket",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 16,
@@ -219,8 +282,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Bosa",
+      "left_image": "2051b",
       "center": "Gasser",
-      "right": "Dax"
+      "center_image": "2052b",
+      "right": "Dax",
+      "right_image": "2039c"
     },
     {
       "trial_number": 17,
@@ -229,8 +295,11 @@
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Dax",
+      "left_image": "2039c",
       "center": "Bosa",
-      "right": "Gasser"
+      "center_image": "2051b",
+      "right": "Gasser",
+      "right_image": "2052b"
     },
     {
       "trial_number": 18,
@@ -239,8 +308,11 @@
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Blicket",
+      "left_image": "2011-600",
       "center": "Toma",
-      "right": "Coodle"
+      "center_image": "2033-600",
+      "right": "Coodle",
+      "right_image": "2044b"
     }
   ]
 }
