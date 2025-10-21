@@ -4,43 +4,49 @@
       "obj_name": "Toma",
       "trial_number": 1,
       "type": "toy",
-      "sound_file_child": "toma_child.mp3",
-      "sound_file_adult": "toma_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Coodle",
       "trial_number": 2,
       "type": "toy",
-      "sound_file_child": "coodle_child.mp3",
-      "sound_file_adult": "coodle_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Bosa",
       "trial_number": 3,
       "type": "tool",
-      "sound_file_child": "bosa_child.mp3",
-      "sound_file_adult": "bosa_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Blicket",
       "trial_number": 4,
       "type": "toy",
-      "sound_file_child": "blicket_child.mp3",
-      "sound_file_adult": "blicket_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Gasser",
       "trial_number": 5,
       "type": "tool",
-      "sound_file_child": "gasser_child.mp3",
-      "sound_file_adult": "gasser_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Dax",
       "trial_number": 6,
       "type": "tool",
-      "sound_file_child": "dax_child.mp3",
-      "sound_file_adult": "dax_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     }
   ],
   "order_2": [
@@ -48,43 +54,49 @@
       "obj_name": "Blicket",
       "trial_number": 1,
       "type": "tool",
-      "sound_file_child": "blicket_child.mp3",
-      "sound_file_adult": "blicket_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Dax",
       "trial_number": 2,
       "type": "toy",
-      "sound_file_child": "dax_child.mp3",
-      "sound_file_adult": "dax_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Gasser",
       "trial_number": 3,
       "type": "toy",
-      "sound_file_child": "gasser_child.mp3",
-      "sound_file_adult": "gasser_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Coodle",
       "trial_number": 4,
       "type": "tool",
-      "sound_file_child": "coodle_child.mp3",
-      "sound_file_adult": "coodle_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Bosa",
       "trial_number": 5,
       "type": "toy",
-      "sound_file_child": "bosa_child.mp3",
-      "sound_file_adult": "bosa_adult.mp3"
+      "type_soundfile": "Look_toy.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     },
     {
       "obj_name": "Toma",
       "trial_number": 6,
       "type": "tool",
-      "sound_file_child": "toma_child.mp3",
-      "sound_file_adult": "toma_adult.mp3"
+      "type_soundfile": "Look_tool.m4a",
+      "sound_file_child": "EK_bosa_toy.wav",
+      "sound_file_adult": "FB_coodle_tool.wav"
     }
   ]
 }
