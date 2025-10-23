@@ -1,9 +1,8 @@
 {
   "test_order_1": [
     {
-      "trial_number": 7,
+      "trial_number": 1,
       "target": "Toma",
-      "type": "toy",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Coodle",
@@ -14,9 +13,8 @@
       "right_image": "2044b"
     },
     {
-      "trial_number": 8,
+      "trial_number": 2,
       "target": "Coodle",
-      "type": "toy",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Blicket",
@@ -27,9 +25,8 @@
       "right_image": "2011-600"
     },
     {
-      "trial_number": 9,
+      "trial_number": 3,
       "target": "Bosa",
-      "type": "tool",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Gasser",
@@ -40,9 +37,8 @@
       "right_image": "2052b"
     },
     {
-      "trial_number": 10,
+      "trial_number": 4,
       "target": "Blicket",
-      "type": "toy",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Toma",
@@ -53,9 +49,8 @@
       "right_image": "2033-600"
     },
     {
-      "trial_number": 11,
+      "trial_number": 5,
       "target": "Gasser",
-      "type": "tool",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Dax",
@@ -66,9 +61,8 @@
       "right_image": "2039c"
     },
     {
-      "trial_number": 12,
+      "trial_number": 6,
       "target": "Dax",
-      "type": "tool",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Bosa",
@@ -79,35 +73,8 @@
       "right_image": "2051b"
     },
     {
-      "trial_number": 13,
-      "target": "Toma",
-      "type": "toy",
-      "question_speaker": "adult",
-      "question_soundfile": "FB_whereisbosa.wav",
-      "left": "Coodle",
-      "left_image": "2033-600",
-      "center": "Toma",
-      "center_image": "2011-600",
-      "right": "Blicket",
-      "right_image": "2044b"
-    },
-    {
-      "trial_number": 14,
-      "target": "Bosa",
-      "type": "tool",
-      "question_speaker": "child",
-      "question_soundfile": "EK_whereisbosa.wav",
-      "left": "Gasser",
-      "left_image": "2051b",
-      "center": "Bosa",
-      "center_image": "2039c",
-      "right": "Dax",
-      "right_image": "2052b"
-    },
-    {
-      "trial_number": 15,
+      "trial_number": 7,
       "target": "Coodle",
-      "type": "toy",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Blicket",
@@ -118,9 +85,20 @@
       "right_image": "2011-600"
     },
     {
-      "trial_number": 16,
+      "trial_number": 8,
+      "target": "Bosa",
+      "question_speaker": "child",
+      "question_soundfile": "EK_whereisbosa.wav",
+      "left": "Gasser",
+      "left_image": "2051b",
+      "center": "Bosa",
+      "center_image": "2039c",
+      "right": "Dax",
+      "right_image": "2052b"
+    },
+    {
+      "trial_number": 9,
       "target": "Gasser",
-      "type": "tool",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Dax",
@@ -131,9 +109,20 @@
       "right_image": "2039c"
     },
     {
-      "trial_number": 17,
+      "trial_number": 10,
+      "target": "Toma",
+      "question_speaker": "adult",
+      "question_soundfile": "FB_whereisbosa.wav",
+      "left": "Coodle",
+      "left_image": "2033-600",
+      "center": "Toma",
+      "center_image": "2011-600",
+      "right": "Blicket",
+      "right_image": "2044b"
+    },
+    {
+      "trial_number": 11,
       "target": "Blicket",
-      "type": "toy",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Toma",
@@ -144,9 +133,8 @@
       "right_image": "2033-600"
     },
     {
-      "trial_number": 18,
+      "trial_number": 12,
       "target": "Dax",
-      "type": "tool",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Bosa",
@@ -159,160 +147,148 @@
   ],
   "test_order_2": [
     {
-      "trial_number": 7,
-      "target": "Blicket",
-      "type": "tool",
+      "trial_number": 1,
+      "target": "Toma",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Coodle",
-      "left_image": "2044b",
-      "center": "Blicket",
+      "left_image": "2033-600",
+      "center": "Toma",
       "center_image": "2011-600",
-      "right": "Toma",
-      "right_image": "2033-600"
+      "right": "Blicket",
+      "right_image": "2044b"
     },
     {
-      "trial_number": 8,
-      "target": "Dax",
-      "type": "toy",
+      "trial_number": 2,
+      "target": "Coodle",
+      "question_speaker": "child",
+      "question_soundfile": "EK_whereisbosa.wav",
+      "left": "Blicket",
+      "left_image": "2044b",
+      "center": "Coodle",
+      "center_image": "2033-600",
+      "right": "Toma",
+      "right_image": "2011-600"
+    },
+    {
+      "trial_number": 3,
+      "target": "Bosa",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Gasser",
-      "left_image": "2052b",
-      "center": "Dax",
+      "left_image": "2051b",
+      "center": "Bosa",
       "center_image": "2039c",
+      "right": "Dax",
+      "right_image": "2052b"
+    },
+    {
+      "trial_number": 4,
+      "target": "Blicket",
+      "question_speaker": "adult",
+      "question_soundfile": "FB_whereisbosa.wav",
+      "left": "Toma",
+      "left_image": "2011-600",
+      "center": "Blicket",
+      "center_image": "2044b",
+      "right": "Coodle",
+      "right_image": "2033-600"
+    },
+    {
+      "trial_number": 5,
+      "target": "Gasser",
+      "question_speaker": "child",
+      "question_soundfile": "EK_whereisbosa.wav",
+      "left": "Dax",
+      "left_image": "2052b",
+      "center": "Gasser",
+      "center_image": "2051b",
       "right": "Bosa",
+      "right_image": "2039c"
+    },
+    {
+      "trial_number": 6,
+      "target": "Dax",
+      "question_speaker": "child",
+      "question_soundfile": "EK_whereisbosa.wav",
+      "left": "Bosa",
+      "left_image": "2039c",
+      "center": "Dax",
+      "center_image": "2052b",
+      "right": "Gasser",
       "right_image": "2051b"
+    },
+    {
+      "trial_number": 7,
+      "target": "Coodle",
+      "question_speaker": "adult",
+      "question_soundfile": "FB_whereisbosa.wav",
+      "left": "Blicket",
+      "left_image": "2044b",
+      "center": "Coodle",
+      "center_image": "2033-600",
+      "right": "Toma",
+      "right_image": "2011-600"
+    },
+    {
+      "trial_number": 8,
+      "target": "Bosa",
+      "question_speaker": "child",
+      "question_soundfile": "EK_whereisbosa.wav",
+      "left": "Gasser",
+      "left_image": "2051b",
+      "center": "Bosa",
+      "center_image": "2039c",
+      "right": "Dax",
+      "right_image": "2052b"
     },
     {
       "trial_number": 9,
       "target": "Gasser",
-      "type": "toy",
-      "question_speaker": "child",
-      "question_soundfile": "EK_whereisbosa.wav",
-      "left": "Bosa",
-      "left_image": "2051b",
+      "question_speaker": "adult",
+      "question_soundfile": "FB_whereisbosa.wav",
+      "left": "Dax",
+      "left_image": "2052b",
       "center": "Gasser",
-      "center_image": "2052b",
-      "right": "Dax",
+      "center_image": "2051b",
+      "right": "Bosa",
       "right_image": "2039c"
     },
     {
       "trial_number": 10,
-      "target": "Coodle",
-      "type": "tool",
-      "question_speaker": "adult",
-      "question_soundfile": "FB_whereisbosa.wav",
-      "left": "Toma",
-      "left_image": "2033-600",
-      "center": "Coodle",
-      "center_image": "2044b",
-      "right": "Blicket",
-      "right_image": "2011-600"
-    },
-    {
-      "trial_number": 11,
       "target": "Toma",
-      "type": "tool",
-      "question_speaker": "adult",
-      "question_soundfile": "FB_whereisbosa.wav",
-      "left": "Blicket",
-      "left_image": "2011-600",
-      "center": "Toma",
-      "center_image": "2033-600",
-      "right": "Coodle",
-      "right_image": "2044b"
-    },
-    {
-      "trial_number": 12,
-      "target": "Bosa",
-      "type": "toy",
-      "question_speaker": "child",
-      "question_soundfile": "EK_whereisbosa.wav",
-      "left": "Dax",
-      "left_image": "2039c",
-      "center": "Bosa",
-      "center_image": "2051b",
-      "right": "Gasser",
-      "right_image": "2052b"
-    },
-    {
-      "trial_number": 13,
-      "target": "Blicket",
-      "type": "tool",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Coodle",
-      "left_image": "2044b",
-      "center": "Blicket",
+      "left_image": "2033-600",
+      "center": "Toma",
       "center_image": "2011-600",
-      "right": "Toma",
-      "right_image": "2033-600"
+      "right": "Blicket",
+      "right_image": "2044b"
     },
     {
-      "trial_number": 14,
-      "target": "Dax",
-      "type": "toy",
-      "question_speaker": "child",
-      "question_soundfile": "EK_whereisbosa.wav",
-      "left": "Gasser",
-      "left_image": "2052b",
-      "center": "Dax",
-      "center_image": "2039c",
-      "right": "Bosa",
-      "right_image": "2051b"
-    },
-    {
-      "trial_number": 15,
-      "target": "Coodle",
-      "type": "tool",
+      "trial_number": 11,
+      "target": "Blicket",
       "question_speaker": "child",
       "question_soundfile": "EK_whereisbosa.wav",
       "left": "Toma",
-      "left_image": "2033-600",
-      "center": "Coodle",
+      "left_image": "2011-600",
+      "center": "Blicket",
       "center_image": "2044b",
-      "right": "Blicket",
-      "right_image": "2011-600"
+      "right": "Coodle",
+      "right_image": "2033-600"
     },
     {
-      "trial_number": 16,
-      "target": "Gasser",
-      "type": "toy",
+      "trial_number": 12,
+      "target": "Dax",
       "question_speaker": "adult",
       "question_soundfile": "FB_whereisbosa.wav",
       "left": "Bosa",
-      "left_image": "2051b",
-      "center": "Gasser",
-      "center_image": "2052b",
-      "right": "Dax",
-      "right_image": "2039c"
-    },
-    {
-      "trial_number": 17,
-      "target": "Bosa",
-      "type": "toy",
-      "question_speaker": "adult",
-      "question_soundfile": "FB_whereisbosa.wav",
-      "left": "Dax",
       "left_image": "2039c",
-      "center": "Bosa",
-      "center_image": "2051b",
+      "center": "Dax",
+      "center_image": "2052b",
       "right": "Gasser",
-      "right_image": "2052b"
-    },
-    {
-      "trial_number": 18,
-      "target": "Toma",
-      "type": "tool",
-      "question_speaker": "child",
-      "question_soundfile": "EK_whereisbosa.wav",
-      "left": "Blicket",
-      "left_image": "2011-600",
-      "center": "Toma",
-      "center_image": "2033-600",
-      "right": "Coodle",
-      "right_image": "2044b"
+      "right_image": "2051b"
     }
   ]
 }
