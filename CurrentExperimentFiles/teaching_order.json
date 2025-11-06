@@ -2,7 +2,7 @@
   "order_1": [
     {
       "obj_name": "Toma",
-      "image_id": "2011-600",
+      "image_id": "2011-600.jpg",
       "trial_number": 1,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",
@@ -11,7 +11,7 @@
     },
     {
       "obj_name": "Coodle",
-      "image_id": "2039c",
+      "image_id": "2039c.jpg",
       "trial_number": 2,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",
@@ -20,7 +20,7 @@
     },
     {
       "obj_name": "Bosa",
-      "image_id": "2033-600",
+      "image_id": "2033-600.jpg",
       "trial_number": 3,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -29,7 +29,7 @@
     },
     {
       "obj_name": "Blicket",
-      "image_id": "2044b",
+      "image_id": "2044b.jpg",
       "trial_number": 4,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",
@@ -38,7 +38,7 @@
     },
     {
       "obj_name": "Gasser",
-      "image_id": "2051c",
+      "image_id": "2051c.jpg",
       "trial_number": 5,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -47,7 +47,7 @@
     },
     {
       "obj_name": "Dax",
-      "image_id": "2052b",
+      "image_id": "2052b.jpg",
       "trial_number": 6,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -58,7 +58,7 @@
   "order_2": [
     {
       "obj_name": "Toma",
-      "image_id": "2011-600",
+      "image_id": "2011-600.jpg",
       "trial_number": 1,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -67,7 +67,7 @@
     },
     {
       "obj_name": "Coodle",
-      "image_id": "2039c",
+      "image_id": "2039c.jpg",
       "trial_number": 2,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -76,7 +76,7 @@
     },
     {
       "obj_name": "Bosa",
-      "image_id": "2033-600",
+      "image_id": "2033-600.jpg",
       "trial_number": 3,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",
@@ -85,7 +85,7 @@
     },
     {
       "obj_name": "Blicket",
-      "image_id": "2044b",
+      "image_id": "2044b.jpg",
       "trial_number": 4,
       "type": "tool",
       "type_soundfile": "Look_tool.m4a",
@@ -94,7 +94,7 @@
     },
     {
       "obj_name": "Gasser",
-      "image_id": "2051c",
+      "image_id": "2051c.jpg",
       "trial_number": 5,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",
@@ -103,7 +103,7 @@
     },
     {
       "obj_name": "Dax",
-      "image_id": "2052b",
+      "image_id": "2052b.jpg",
       "trial_number": 6,
       "type": "toy",
       "type_soundfile": "Look_toy.m4a",

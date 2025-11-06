@@ -1,0 +1,366 @@
+<!-- 
+Author: Jiya Gupta
+Created: November 2025
+Description: Teaching Order Experiment built with jsPsych
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teaching Order Experiment</title>
+
+  <!-- jsPsych library and plugins -->
+  <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugin-html-button-response.js"></script>
+  <script src="jspsych/plugin-html-keyboard-response.js"></script>
+
+  <!-- jsPsych stylesheet -->
+  <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    /*
+      Styles for triangle layout and elements.
+      - triangle-container forms the triangle layout (object at top, informants bottom left/right).
+      - selected class gives the gold border when an informant is selected.
+    */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0; padding: 0;
+    }
+
+    #triangle-container {
+      display: grid;
+      grid-template-areas:
+        "object object"
+        "child adult";
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    #triangle-container img {
+      max-width: 180px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 4px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    #triangle-container img.selected {
+      border-color: gold;
+    }
+
+    #object-small {
+      grid-area: object;
+      max-width: 200px;
+      cursor: default;
+      border: none !important;
+      justify-self: center;
+    }
+
+    #child-informant {
+      grid-area: child;
+      justify-self: end;
+    }
+
+    #adult-informant {
+      grid-area: adult;
+      justify-self: start;
+    }
+
+    #full-image {
+      max-width: 300px;
+      margin: 60px auto 10px auto;
+    }
+
+    pre {
+      text-align: left;
+      max-height: 70vh;
+      overflow: auto;
+      background: #eee;
+      padding: 1em;
+      margin: 2em auto;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body></body>
+
+<script>
+  /**************************************************************************
+   * Initialization: create jsPsych instance and set on_finish handler
+   * - override_safe_mode: allows local file loading behavior you used earlier
+   * - on_finish: shows collected data in a <pre> block when the experiment ends
+   **************************************************************************/
+  const jsPsych = initJsPsych({
+    override_safe_mode: true,
+    on_finish: () => {
+      const allData = jsPsych.data.get().json();
+      document.body.innerHTML = `
+        <h2>Experiment Complete - Data Output</h2>
+        <pre>${allData}</pre>
+      `;
+    }
+  });
+
+  /**************************************************************************
+   * Constants & assets
+   * - paths for informant images and the two fixed audio files (audio2 & audio3)
+   **************************************************************************/
+  const CHILD_IMAGE = "img/child_informant.png";
+  const ADULT_IMAGE = "img/adult_informant.png";
+  const AUDIO_2 = "audio/Knowledge_attribution_question.m4a";
+  const AUDIO_3 = "audio/Learning_preference_question.m4a";
+
+  /**************************************************************************
+   * Start screen trial
+   * - simple button trial that starts the experiment timeline
+   **************************************************************************/
+  const start_trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p>Click <strong>Start</strong> to begin the experiment</p>",
+    choices: ["Start"]
+  };
+
+  /**************************************************************************
+   * createSelectionTrial(trialNumber, objName, stage, imgPath)
+   *
+   * Returns a jsPsych trial object where participant selects either the child
+   * or adult informant. Layout is the triangle (object above, informants below).
+   *
+   * Behavior:
+   * - Clicking an informant highlights it with a gold border.
+   * - After a short delay the trial finishes and records the selection.
+   *
+   * This function is called twice per main trial: after audio2 and after audio3.
+   **************************************************************************/
+  function createSelectionTrial(trialNumber, objName, stage, imgPath) {
+    return {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}" alt="${objName}">
+          <img src="${CHILD_IMAGE}" alt="Child Informant" id="child-informant">
+          <img src="${ADULT_IMAGE}" alt="Adult Informant" id="adult-informant">
+        </div>
+        <p><strong>Please click on the image to make your selection.</strong></p>
+      `,
+      choices: [], // no clickable buttons — selection via image clicks
+      on_load: () => {
+        // Grab the image elements
+        const childImg = document.getElementById('child-informant');
+        const adultImg = document.getElementById('adult-informant');
+        let selected = null; // prevent multiple clicks
+
+        // Handler for selecting an informant
+        function selectInformant(selectedInformant) {
+          if (selected) return;
+          selected = selectedInformant;
+
+          // Visual feedback: gold border for selected informant
+          if (selectedInformant === 'child') {
+            childImg.classList.add('selected');
+            adultImg.classList.remove('selected');
+          } else {
+            adultImg.classList.add('selected');
+            childImg.classList.remove('selected');
+          }
+
+          // After a short delay save selection and finish the trial
+          setTimeout(() => {
+            jsPsych.finishTrial({
+              trial_type: `selection_${stage}`,
+              trial_number: trialNumber,
+              obj_name: objName,
+              selection: selectedInformant
+            });
+          }, 700);
+        }
+
+        // Attach click listeners to informant images
+        childImg.addEventListener('click', () => selectInformant('child'));
+        adultImg.addEventListener('click', () => selectInformant('adult'));
+      },
+      trial_duration: null
+    };
+  }
+
+  /**************************************************************************
+   * Load teaching order JSON, build timeline, and run experiment
+   *
+   * Steps:
+   * 1. Fetch JSON (teaching_order.json)
+   * 2. Randomly pick order_1 or order_2
+   * 3. For each trial in the chosen order, create:
+   *    - Stage 1: Show object + play type_soundfile (Look_toy/Look_tool) with text
+   *    - Stage 2: Show triangle + play audio2, with a text prompt
+   *    - Selection after Stage 2: createSelectionTrial(...) to record informant choice
+   *    - Stage 3: Show triangle + play audio3, with a text prompt
+   *    - Selection after Stage 3: createSelectionTrial(...) to record second choice
+   **************************************************************************/
+  fetch('teaching_order.json')
+    .then(response => response.json())
+    .then(data => {
+      // log full data for debugging (safe to remove once stable)
+      const orderKeys = Object.keys(data);
+      const selectedOrderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+      console.log("Selected order key:", selectedOrderKey);
+
+      const trials = data[selectedOrderKey];
+      console.log("Trials array for selected order:", trials);
+
+      // Timeline starts with the start screen
+      const timeline = [start_trial];
+
+      // Map obj_name to the actual image filenames used in your image folder
+      const imageMapping = {
+        "Toma": "2011-600.jpg",
+        "Coodle": "2039c.jpg",
+        "Bosa": "2033-600.jpg",
+        "Blicket": "2044b.jpg",
+        "Gasser": "2051c.jpg",
+        "Dax": "2052b.jpg"
+      };
+
+      // Loop through each trial in the selected order and create the sub-stages
+      trials.forEach(trial => {
+        // Determine image path using imageMapping; fallback to 'placeholder.jpg'
+        const imgPath = `img/${imageMapping[trial.obj_name] || 'placeholder.jpg'}`;
+        console.log(`Using image path: ${imgPath} for obj_name: ${trial.obj_name}`);
+
+        /******************************
+         * Stage 1 (object presentation)
+         * - Displays the object image in the center (large)
+         * - Shows dynamic text depending on whether it's a toy or tool
+         * - Plays the corresponding audio type (trial.type_soundfile)
+         * - Finishes automatically when audio ends
+         ******************************/
+        let stage1Text = "";
+        if (trial.type_soundfile === "Look_toy.m4a") {
+          stage1Text = "Look at this toy!";
+        } else if (trial.type_soundfile === "Look_tool.m4a") {
+          stage1Text = "Look at this tool!";
+        }
+
+        const stage1 = {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `
+            <div>
+              <img id="full-image" src="${imgPath}" alt="${trial.obj_name}" />
+              <p style="font-size: 20px; font-weight: bold;">${stage1Text}</p>
+              <audio id="audio1" src="audio/${trial.type_soundfile}" autoplay></audio>
+            </div>
+          `,
+          choices: "NO_KEYS", // no keyboard responses
+          trial_duration: null,
+          on_load: () => {
+            // finish this stage when audio1 ends
+            const audio = document.getElementById('audio1');
+            audio.onended = () => jsPsych.finishTrial();
+          },
+          data: {
+            trial_type: 'stage_1',
+            trial_number: trial.trial_number,
+            obj_name: trial.obj_name,
+            audio_file: trial.type_soundfile
+          }
+        };
+
+        /******************************
+         * Stage 2 (knowledge attribution)
+         * - Shows triangle layout with object + informants
+         * - Shows the prompt: "Who do you think knows what this object is called?"
+         * - Plays AUDIO_2 and ends automatically when it finishes
+         ******************************/
+        const stage2_audio = AUDIO_2;
+        const stage2 = {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `
+            <div id="triangle-container">
+              <img id="object-small" src="${imgPath}" alt="${trial.obj_name}">
+              <img src="${CHILD_IMAGE}" alt="Child Informant" id="child-informant">
+              <img src="${ADULT_IMAGE}" alt="Adult Informant" id="adult-informant">
+            </div>
+            <p style="font-size: 20px; font-weight: bold;">Who do you think knows what this object is called?</p>
+            <audio id="audio2" src="${stage2_audio}" autoplay></audio>
+          `,
+          choices: "NO_KEYS",
+          trial_duration: null,
+          on_load: () => {
+            const audio = document.getElementById('audio2');
+            audio.onended = () => jsPsych.finishTrial();
+          },
+          data: {
+            trial_type: 'stage_2_audio',
+            trial_number: trial.trial_number,
+            obj_name: trial.obj_name,
+            audio_file: stage2_audio
+          }
+        };
+
+        // Selection trial after audio2 (participant chooses child or adult)
+        const selection_after_stage2 = createSelectionTrial(trial.trial_number, trial.obj_name, 'stage_2', imgPath);
+
+        /******************************
+         * Stage 3 (learning preference)
+         * - Shows triangle layout again
+         * - Shows the prompt: "Who would you like to learn the name of this object from?"
+         * - Plays AUDIO_3 and ends automatically when it finishes
+         ******************************/
+        const stage3_audio = AUDIO_3;
+        const stage3 = {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `
+            <div id="triangle-container">
+              <img id="object-small" src="${imgPath}" alt="${trial.obj_name}">
+              <img src="${CHILD_IMAGE}" alt="Child Informant" id="child-informant">
+              <img src="${ADULT_IMAGE}" alt="Adult Informant" id="adult-informant">
+            </div>
+            <p style="font-size: 20px; font-weight: bold;">Who would you like to learn the name of this object from?</p>
+            <audio id="audio3" src="${stage3_audio}" autoplay></audio>
+          `,
+          choices: "NO_KEYS",
+          trial_duration: null,
+          on_load: () => {
+            const audio = document.getElementById('audio3');
+            audio.onended = () => jsPsych.finishTrial();
+          },
+          data: {
+            trial_type: 'stage_3_audio',
+            trial_number: trial.trial_number,
+            obj_name: trial.obj_name,
+            audio_file: stage3_audio
+          }
+        };
+
+        // Selection trial after audio3 (participant chooses child or adult again)
+        const selection_after_stage3 = createSelectionTrial(trial.trial_number, trial.obj_name, 'stage_3', imgPath);
+
+        /******************************
+         * Push stages to the timeline in the correct order:
+         * stage1 -> stage2 -> selection_after_stage2 -> stage3 -> selection_after_stage3
+         ******************************/
+        timeline.push(stage1);
+        timeline.push(stage2);
+        timeline.push(selection_after_stage2);
+        timeline.push(stage3);
+        timeline.push(selection_after_stage3);
+      });
+
+      // Start running the experiment
+      jsPsych.run(timeline);
+    })
+    .catch(err => {
+      // If fetching JSON fails, show an error message in the page.
+      console.error('Error loading teaching_order.json:', err);
+      document.body.innerHTML = "<h2>Error loading experiment data.</h2>";
+    });
+</script>
+</html>
