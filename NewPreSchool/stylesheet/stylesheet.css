@@ -1,0 +1,5 @@
+.highlight-scale {
+    transition: transform 300ms ease;
+    transform: scale(1.25);
+    will-change: transform;
+}

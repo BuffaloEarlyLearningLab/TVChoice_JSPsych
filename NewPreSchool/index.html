@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+</body>
+<script>
+
+    var jsPsych = initJsPsych();
+
+    timeline = []
+
+    // Screen 1: Welcome block
+
+    var welcome_block = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Start the experiment</p>',
+        choices: ['Next']
+    };
+    timeline.push(welcome_block);
+
+    // screen 2: Informant
+
+    const informat_audio = {
+        type: 'preload', audio: [
+            'assets/Experimenter voice recordings/Informant_intro_people.m4a',
+            'assets/Experimenter voice recordings/Informant_intro_kid.m4a',
+            'assets/Experimenter voice recordings/Informant_intro_grownup.m4a'
+        ]
+    };
+
+    const informat_html = '<div style="display:flex;gap:200px;justify-content:center">' +
+        '<img id="adult_informant" src="assets/img/adult_informant.png" style="max-width:40%">' +
+        '<img id="child_informant" src="assets/img/child_informant.png" style="max-width:40%">' +
+        '</div>';
+
+    var informat_main = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html,
+        choices: "NO_KEYS",
+        on_load: Informant_intro_people,
+    };
+    timeline.push(informat_main);
+
+    var informat_end = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html,
+        choices: [' '],
+        prompt: '<p>Press space to continue</p>',
+        response_ends_trial: true,
+
+    };
+    timeline.push(informat_end);
+
+
+    jsPsych.run({
+        timeline: timeline,
+        on_finish: function () {
+            jsPsych.data.displayData();
+        }
+    });
+
+
+</script>
+
+</html>
