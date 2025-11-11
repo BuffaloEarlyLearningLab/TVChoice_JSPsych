@@ -1,0 +1,92 @@
+<!-- 
+Author: Jiya Gupta
+Created: November 2025
+Description: Justification Question
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Justification Question</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugin-html-button-response.js"></script>
+    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      .question-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        gap: 5vh;
+      }
+
+      .question-mark {
+        font-size: 160px;
+        font-weight: bold;
+      }
+
+      button {
+        font-size: 20px;
+        padding: 10px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body></body>
+
+  <script>
+    const jsPsych = initJsPsych({
+      override_safe_mode: true,
+      on_finish: () => {
+        // Directly show thank-you message (no data saving)
+        document.body.innerHTML = "<h2>Thank you for participating!</h2>";
+      }
+    });
+
+    // --- 1. Start screen ---
+    const start_trial = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p style="font-size:26px;">Click Start to begin the experiment.</p>`,
+      choices: ["Start"]
+    };
+
+    // --- 2. Question screen ---
+    const question_trial = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `
+        <div class="question-container">
+          <div class="question-mark">?</div>
+          <p style="font-size:22px;">Listen to the audio and click Finish when you're done answering.</p>
+          <audio id="audio" src="audio/Justification_question.m4a"></audio>
+        </div>
+        <script>
+          document.getElementById('audio').play();
+        <\/script>
+      `,
+      choices: ["Finish"],
+      on_load: function() {
+        // Ensure audio plays after render
+        const audio = document.getElementById("audio");
+        if (audio) {
+          audio.play().catch(() => {
+            console.warn("Audio playback was prevented by browser settings.");
+          });
+        }
+      }
+    };
+
+    // --- Run experiment ---
+    jsPsych.run([start_trial, question_trial]);
+  </script>
+</html>
