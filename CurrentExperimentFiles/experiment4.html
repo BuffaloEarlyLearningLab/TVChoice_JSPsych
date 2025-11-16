@@ -1,0 +1,469 @@
+<!-- 
+Author: Jiya Gupta
+Created: November 2025
+Description: Teaching Order Experiment built with jsPsych
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teaching Order Experiment</title>
+
+  <!-- jsPsych library and plugins -->
+  <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugin-html-button-response.js"></script>
+  <script src="jspsych/plugin-html-keyboard-response.js"></script>
+
+  <!-- jsPsych stylesheet -->
+  <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #triangle-container {
+      display: grid;
+      grid-template-areas:
+        "object object"
+        "child adult";
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    #triangle-container img {
+      max-width: 180px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 4px solid transparent;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    #triangle-container img.highlight {
+      transform: scale(1.7);
+      box-shadow: 0 0 15px 5px gold;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #triangle-container img.selected {
+      border-color: gold;
+    }
+    #object-small {
+      grid-area: object;
+      max-width: 200px;
+      cursor: default;
+      border: none !important;
+      justify-self: center;
+    }
+    #child-informant { grid-area: child; justify-self: end; }
+    #adult-informant { grid-area: adult; justify-self: start; }
+    #full-image { max-width: 300px; margin: 60px auto 10px auto; }
+    pre {
+      text-align: left;
+      max-height: 70vh;
+      overflow: auto;
+      background: #eee;
+      padding: 1em;
+      margin: 2em auto;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body></body>
+
+<script>
+/***************************************************************
+ * Initializing jsPsych
+ ***************************************************************/
+const jsPsych = initJsPsych({
+  override_safe_mode: true,
+  on_finish: () => {
+    const allData = jsPsych.data.get().json();
+    document.body.innerHTML = `<h2>Experiment Complete</h2><pre>${allData}</pre>`;
+  }
+});
+
+/***************************************************************
+ * Constants
+ ***************************************************************/
+const CHILD_IMAGE = "img/child_informant.png";
+const ADULT_IMAGE = "img/adult_informant.png";
+const AUDIO_KNOWLEDGE_QUESTION = "audio/Knowledge_attribution_question.m4a";
+const AUDIO_KNOWLEDGE_CHILD = "audio/Knowledge_attri_child_followup.m4a";
+const AUDIO_KNOWLEDGE_ADULT = "audio/Knowledge_attri_adult_followup.m4a";
+const AUDIO_LEARNING_QUESTION = "audio/Learning_preference_question.m4a";
+const AUDIO_LEARNING_CHILD = "audio/Learning_pref_child_followup.m4a";
+const AUDIO_LEARNING_ADULT = "audio/Learning_pref_adult_followup.m4a";
+
+/***************************************************************
+ * Start screen
+ ***************************************************************/
+const start_trial = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: "<p><strong>Click Start to begin.</strong></p>",
+  choices: ["Start"]
+};
+
+/***************************************************************
+ * Helper: selection screen (for user choice)
+ ***************************************************************/
+function createSelectionTrial(objName, stage, imgPath) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+      <div id="triangle-container">
+        <img id="object-small" src="${imgPath}" alt="${objName}">
+        <img src="${CHILD_IMAGE}" alt="Child Informant" id="child-informant">
+        <img src="${ADULT_IMAGE}" alt="Adult Informant" id="adult-informant">
+      </div>
+    `,
+    choices: [], 
+    on_load: () => {
+      const child = document.getElementById('child-informant');
+      const adult = document.getElementById('adult-informant');
+      let selected = null;
+
+      function select(choice) {
+        if (selected) return;  
+        selected = choice;
+        if (choice === 'child') {
+          child.classList.add('selected');
+          adult.classList.remove('selected');
+        } else {
+          adult.classList.add('selected');
+          child.classList.remove('selected');
+        }
+        setTimeout(() => {
+          jsPsych.finishTrial({ stage: stage, selection: choice });
+        }, 500);
+      }
+
+      child.addEventListener('click', () => select('child'));
+      adult.addEventListener('click', () => select('adult'));
+    }
+  };
+}
+
+/***************************************************************
+ * Helper: repeat-name trial (fixed audio file for all objects as of now)
+ ***************************************************************/
+function createRepeatNameTrial(objName, imgPath) {
+  const audioPath = `audio/Name_of_object.m4a`;  
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+      <div>
+        <img id="full-image" src="${imgPath}" alt="${objName}">
+        <audio id="repeatAudio" src="${audioPath}" autoplay></audio>
+      </div>
+    `,
+    choices: ["Next"],
+    on_load: () => {
+      const btn = document.querySelector("button");
+      btn.disabled = true;
+      document.getElementById("repeatAudio").onended = () => (btn.disabled = false);
+    },
+    data: {
+      trial_type: "repeat_name",
+      obj_name: objName,
+      audio_file: audioPath
+    }
+  };
+}
+
+/***************************************************************
+ * Helper: Play audio trial with custom stimulus HTML, wait for end
+ ***************************************************************/
+function createAudioTrial(stimulusHtml, audioSrc) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: stimulusHtml,
+    choices: [],
+    on_load: () => {
+      const audio = new Audio(audioSrc);
+      audio.play();
+      audio.onended = () => jsPsych.finishTrial();
+    }
+  };
+}
+
+/***************************************************************
+ * Helper: Pause trial for given ms
+ ***************************************************************/
+function createPauseTrial(stimulusHtml, duration) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: stimulusHtml,
+    choices: [],
+    trial_duration: duration
+  };
+}
+
+/***************************************************************
+ * Helper: knowledge attribution sequence for one object
+ ***************************************************************/
+function knowledgeAttributionSequence(objName, imgPath) {
+  return {
+    timeline: [
+      // 1. Question audio
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        AUDIO_KNOWLEDGE_QUESTION
+      ),
+
+      // 2. Child followup audio + highlight child icon
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant" class="highlight">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        AUDIO_KNOWLEDGE_CHILD
+      ),
+
+      // 3. Keep highlight 1.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant" class="highlight">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        1500
+      ),
+
+      // 4. Remove highlight 0.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        500
+      ),
+
+      // 5. Adult followup audio + highlight adult icon
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant" class="highlight">
+        </div>`,
+        AUDIO_KNOWLEDGE_ADULT
+      ),
+
+      // 6. Keep highlight 1.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant" class="highlight">
+        </div>`,
+        1500
+      ),
+
+      // 7. Remove highlight 0.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        500
+      ),
+
+      // 8. Choice trial
+      createSelectionTrial(objName, "knowledge", imgPath)
+    ]
+  };
+}
+
+/***************************************************************
+ * Helper: learning preference sequence for one object (same pattern)
+ ***************************************************************/
+function learningPreferenceSequence(objName, imgPath) {
+  return {
+    timeline: [
+      // 1. Question audio
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        AUDIO_LEARNING_QUESTION
+      ),
+
+      // 2. Child followup audio + highlight child icon
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant" class="highlight">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        AUDIO_LEARNING_CHILD
+      ),
+
+      // 3. Keep highlight 1.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant" class="highlight">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        1500
+      ),
+
+      // 4. Remove highlight 0.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        500
+      ),
+
+      // 5. Adult followup audio + highlight adult icon
+      createAudioTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant" class="highlight">
+        </div>`,
+        AUDIO_LEARNING_ADULT
+      ),
+
+      // 6. Keep highlight 1.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant" class="highlight">
+        </div>`,
+        1500
+      ),
+
+      // 7. Remove highlight 0.5s
+      createPauseTrial(
+        `
+        <div id="triangle-container">
+          <img id="object-small" src="${imgPath}">
+          <img src="${CHILD_IMAGE}" id="child-informant">
+          <img src="${ADULT_IMAGE}" id="adult-informant">
+        </div>`,
+        500
+      ),
+
+      // 8. Choice trial
+      createSelectionTrial(objName, "learning", imgPath)
+    ]
+  };
+}
+
+/***************************************************************
+ * Load JSON and build timeline
+ ***************************************************************/
+fetch("teaching_order.json")
+  .then((r) => r.json())
+  .then((data) => {
+    const orderKeys = Object.keys(data);
+    const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+    console.log("Selected order key:", orderKey);
+
+    const trials = data[orderKey];
+    const timeline = [start_trial];
+
+    trials.forEach((trial) => {
+      const imgPath = `img/${trial.image_id}`;
+      console.log("Using image path:", imgPath, "for", trial.obj_name);
+
+      // Stage 1: object introduction audio
+      const stage1 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+          <div>
+            <img id="full-image" src="${imgPath}">
+            <audio id="introAudio" src="audio/${trial.type_soundfile}" autoplay></audio>
+          </div>`,
+        choices: "NO_KEYS",
+        on_load: () => {
+          document.getElementById("introAudio").onended = () => jsPsych.finishTrial();
+        },
+        data: { trial_type: "stage_1", obj_name: trial.obj_name }
+      };
+
+      // Knowledge attribution sequence (audio + highlights + choice)
+      const knowledgeSeq = knowledgeAttributionSequence(trial.obj_name, imgPath);
+
+      // Learning preference sequence (audio + highlights + choice)
+      const learningSeq = learningPreferenceSequence(trial.obj_name, imgPath);
+
+      // Teaching audio + next button
+      const teachingTrial = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: () => {
+          // get last choice from learning selection
+          const lastChoice = jsPsych.data.get().last(1).values()[0].selection;
+          const selectedInformant = lastChoice === "child" ? "child" : "adult";
+          const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
+          return `
+            <div>
+              <img id="full-image" src="${imgPath}">
+              <audio id="teachAudio" src="audio/${teachingAudio}" autoplay></audio>
+            </div>`;
+        },
+        choices: ["Next"],
+        on_load: () => {
+          const btn = document.querySelector("button");
+          btn.disabled = true;
+          document.getElementById("teachAudio").onended = () => (btn.disabled = false);
+        },
+        data: () => {
+          const sel = jsPsych.data.get().last(1).values()[0].selection;
+          return {
+            trial_type: "teaching_audio",
+            obj_name: trial.obj_name,
+            selected_informant: sel
+          };
+        }
+      };
+
+      // Repeat name trial (fixed audio file as of now)
+      const repeatTrial = createRepeatNameTrial(trial.obj_name, imgPath);
+
+      // Push all to timeline
+      timeline.push(stage1);
+      timeline.push(knowledgeSeq);
+      timeline.push(learningSeq);
+      timeline.push(teachingTrial);
+      timeline.push(repeatTrial);
+    });
+
+    jsPsych.run(timeline);
+  })
+  .catch((e) => {
+    console.error("Error loading teaching_order.json:", e);
+    document.body.innerHTML = "<h2>Error loading data.</h2>";
+  });
+</script>
+</html>
