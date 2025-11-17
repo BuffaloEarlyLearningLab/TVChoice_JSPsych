@@ -41,9 +41,9 @@
         ]
     };
 
-    const informat_html = '<div style="display:flex;gap:200px;justify-content:center">' +
-        '<img id="adult_informant" src="assets/img/adult_informant.png" style="max-width:40%">' +
-        '<img id="child_informant" src="assets/img/child_informant.png" style="max-width:40%">' +
+    const informat_html = '<div style="display:flex;gap:60px;justify-content:center">' +
+        '<div style="text-align:center"><img id="adult_informant" src="assets/img/adult_informant.png" style="max-width:60%"></div>' +
+        '<div style="text-align:center"><img id="child_informant" src="assets/img/child_informant.png" style="max-width:60%"></div>' +
         '</div>';
 
     var informat_main = {
@@ -52,7 +52,7 @@
         choices: "NO_KEYS",
         on_load: Informant_intro_people,
     };
-    timeline.push(informat_main);
+    //timeline.push(informat_main);
 
     var informat_end = {
         type: jsPsychHtmlKeyboardResponse,
@@ -62,7 +62,36 @@
         response_ends_trial: true,
 
     };
-    timeline.push(informat_end);
+    //timeline.push(informat_end);
+
+    // Screen 3: Comprehension check
+
+    comp_check_html_tag = `<div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
+      <div style="text-align:center">
+        <img id="adult_choice" src="assets/img/adult_informant.png" alt="Adult informant" style="max-width:60%;cursor:not-allowed;opacity:0.6" />
+      </div>
+      <div style="text-align:center">
+        <img id="child_choice" src="assets/img/child_informant.png" alt="Child informant" style="max-width:60%;cursor:not-allowed;opacity:0.6" />
+      </div>
+    </div>`;
+
+    const compCheckParams = {
+        "grownup": 'assets/Experimenter voice recordings/Informant_compre_grownup.m4a',
+        "kid": 'assets/Experimenter voice recordings/Informant_compre_kid.m4a',
+    };
+
+
+    for (let informant in compCheckParams) {
+        timeline.push({
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: comp_check_html_tag,
+            choices: "NO_KEYS",
+            on_load: function () { comp_check_load(informant, compCheckParams[informant]); }
+
+        });
+    }
+
+
 
 
     jsPsych.run({
