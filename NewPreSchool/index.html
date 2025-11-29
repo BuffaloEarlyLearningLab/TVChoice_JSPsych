@@ -18,6 +18,8 @@
 </body>
 <script>
 
+
+
     var jsPsych = initJsPsych();
 
     timeline = []
@@ -52,7 +54,7 @@
         choices: "NO_KEYS",
         on_load: Informant_intro_people,
     };
-    //timeline.push(informat_main);
+    timeline.push(informat_main);
 
     var informat_end = {
         type: jsPsychHtmlKeyboardResponse,
@@ -62,7 +64,7 @@
         response_ends_trial: true,
 
     };
-    //timeline.push(informat_end);
+    timeline.push(informat_end);
 
     // Screen 3: Comprehension check
 
@@ -91,16 +93,90 @@
         });
     }
 
+    //Learning Phase
+    //3. Object Presentation
+
+    (async () => {
+        const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/Knowledge_attribution_question.m4a";
+        const AUDIO_KNOWLEDGE_CHILD = "assets/Experimenter voice recordings/Learning_pref_child_followup.m4a";
+        const AUDIO_KNOWLEDGE_ADULT = "assets/Experimenter voice recordings/Learning_pref_adult_followup.m4a";
+        const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/Learning_preference_question.m4a";
+        const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/Learning_pref_child_followup.m4a";
+        const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/Learning_pref_adult_followup.m4a";
+
+        const teaching_order_data = await loadData('assets/teaching_order.json');
+        // Randomly select one of the order keys
+        const orderKeys = Object.keys(teaching_order_data);
+        const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+        console.log("Selected order key:", orderKey);
+        const trials = teaching_order_data[orderKey];
+
+        image_html_template = (imgPath, type_soundfile) => `
+          <div style="display:flex;justify-content:center">
+            <img id="full-image" style="max-width:60%" src="assets/img/${imgPath}">
+          </div>`
+
+        trials.forEach((trial) => {
+            const imgPath = `${trial.image_id}`;
+            console.log("Using image path:", imgPath, "for", trial.obj_name);
+
+            // Stage 1: object introduction audio
+            var object_intro = {
+                type: jsPsychHtmlKeyboardResponse,
+                stimulus: image_html_template(imgPath, trial.type_soundfile),
+                choices: "NO_KEYS",
+                on_load: function () { play_object_intro(trial.type_soundfile); },
+                data: { trial_type: "stage_1", obj_name: trial.obj_name }
+            };
+            // push stage 1: object introduction (plays its own audio)
+            timeline.push(object_intro);
+
+            //push the knowledge-attribution sequence for this object (flattened)
+            timeline.push(...build_common_sequence(
+                trial.obj_name,
+                'knowledge',
+                imgPath,
+                AUDIO_KNOWLEDGE_QUESTION,
+                AUDIO_KNOWLEDGE_CHILD,
+                AUDIO_KNOWLEDGE_ADULT
+            ));
+
+            //push the learning-preference sequence for this object (flattened) 
+            timeline.push(...build_common_sequence(
+                trial.obj_name,
+                'learning',
+                imgPath,
+                AUDIO_LEARNING_QUESTION,
+                AUDIO_LEARNING_CHILD,
+                AUDIO_LEARNING_ADULT
+            ));
+
+            const lastChoice = null;
+            async (params) => {
+                lastChoice = jsPsych.data.get().last(1).values()[0].selection;
+
+            }
+            //console.log("Last choice for teaching trial:", lastChoice);
+
+            // Teaching audio + next button
+            timeline.push(...teachingTrial(trial, imgPath, lastChoice));
+
+            // Repeat name trial
+            timeline.push(createRepeatNameTrial(trial, imgPath, lastChoice))
 
 
 
-    jsPsych.run({
-        timeline: timeline,
-        on_finish: function () {
-            jsPsych.data.displayData();
-        }
-    });
+        });
+    })();
 
+
+    (async () => {
+        console.log('built timeline:', timeline);
+        jsPsych.run({
+            timeline: timeline,
+            //on_finish: function () { jsPsych.data.displayData(); }
+        });
+    })();
 
 </script>
 
