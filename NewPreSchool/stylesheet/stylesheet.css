@@ -1,0 +1,77 @@
+.highlight-scale {
+    transition: transform 300ms ease;
+    transform: scale(1.25);
+    will-change: transform;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+
+#triangle-container {
+    display: grid;
+    grid-template-areas:
+        "object object"
+        "child adult";
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+#triangle-container img {
+    max-width: 180px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 4px solid transparent;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+#triangle-container img.highlight {
+    transform: scale(1.7);
+    box-shadow: 0 0 15px 5px gold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#triangle-container img.selected {
+    border-color: gold;
+}
+
+#object-small {
+    grid-area: object;
+    max-width: 200px;
+    cursor: default;
+    border: none !important;
+    justify-self: center;
+}
+
+#child-informant {
+    grid-area: child;
+    justify-self: end;
+}
+
+#adult-informant {
+    grid-area: adult;
+    justify-self: start;
+}
+
+#full-image {
+    max-width: 300px;
+    margin: 60px auto 10px auto;
+}
+
+pre {
+    text-align: left;
+    max-height: 70vh;
+    overflow: auto;
+    background: #eee;
+    padding: 1em;
+    margin: 2em auto;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}

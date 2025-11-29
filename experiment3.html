@@ -5,170 +5,173 @@ Description: Test Order Experiment built with jsPsych
 -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>DWL Test Trials</title>
-    <script src="jspsych/jspsych.js"></script>
-    <script src="jspsych/plugin-html-button-response.js"></script>
-    <script src="jspsych/plugin-html-keyboard-response.js"></script>
-    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
-    <style>
-      .triangle-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
-        padding-top: 5vh;
-        gap: 4vh;
-      }
 
-      .top-row img,
-      .bottom-row img {
-        width: 18vw;
-        max-width: 220px;
-        border: 5px solid transparent;
-        border-radius: 12px;
-        transition: border 0.2s ease;
-      }
+<head>
+  <title>DWL Test Trials</title>
+  <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugin-html-button-response.js"></script>
+  <script src="jspsych/plugin-html-keyboard-response.js"></script>
+  <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+  <style>
+    .triangle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding-top: 5vh;
+      gap: 4vh;
+    }
 
-      .bottom-row {
-        display: flex;
-        justify-content: center;
-        gap: 6vw;
-      }
+    .top-row img,
+    .bottom-row img {
+      width: 18vw;
+      max-width: 220px;
+      border: 5px solid transparent;
+      border-radius: 12px;
+      transition: border 0.2s ease;
+    }
 
-      img:hover {
-        cursor: pointer;
-        border-color: gold;
-      }
+    .bottom-row {
+      display: flex;
+      justify-content: center;
+      gap: 6vw;
+    }
 
-      .selected {
-        border-color: gold;
-      }
-    </style>
-  </head>
-  <body style="margin:0; padding:0;"></body>
-  <script>
-    const jsPsych = initJsPsych({
-      override_safe_mode: true,
-      on_finish: () => {
-        // Export data as CSV
-        const csv = jsPsych.data.get().csv();
+    img:hover {
+      cursor: pointer;
+      border-color: gold;
+    }
 
-        // Create a blob from the CSV string
-        const blob = new Blob([csv], {type: "text/csv"});
+    img.selected {
+      border-color: gold;
+    }
+  </style>
+</head>
 
-        // Create a link and trigger a download
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "experiment_data.csv";
-        a.click();
+<body style="margin:0; padding:0;"></body>
+<script>
+  const jsPsych = initJsPsych({
+    override_safe_mode: true,
+    on_finish: () => {
+      // Export data as CSV
+      const csv = jsPsych.data.get().csv();
 
-        // Clean up the URL object
-        URL.revokeObjectURL(url);
+      // Create a blob from the CSV string
+      const blob = new Blob([csv], { type: "text/csv" });
 
-        // Show a thank you message
-        document.body.innerHTML = "<h2>Thank you! Your data has been saved.</h2>";
-      }
-    });
+      // Create a link and trigger a download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "experiment_data.csv";
+      a.click();
 
-    // --- Start button ---
-    const start_trial = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: "<p>Click Start to begin the experiment</p>",
-      choices: ["Start"]
-    };
+      // Clean up the URL object
+      URL.revokeObjectURL(url);
 
-    // --- Load JSON and create trials ---
-    fetch('test_order.json')
-      .then(response => response.json())
-      .then(data => {
-        // Randomly select one order
-        const orderNames = Object.keys(data);
-        const selectedOrderName = orderNames[Math.floor(Math.random() * orderNames.length)];
-        console.log("Selected order:", selectedOrderName);
-        const selectedOrder = data[selectedOrderName];
+      // Show a thank you message
+      document.body.innerHTML = "<h2>Thank you! Your data has been saved.</h2>";
+    }
+  });
 
-        // Create jsPsych trials array
-        const testTrials = selectedOrder.map(trial => {
-          // Map positions to object labels (names)
-          const positionToLabel = {
-            left: trial.left,
-            center: trial.center,
-            right: trial.right
-          };
+  // --- Start button ---
+  const start_trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p>Click Start to begin the experiment</p>",
+    choices: ["Start"]
+  };
 
-          // Map positions to image IDs for display
-          const positionToImage = {
-            left: trial.left_image,
-            center: trial.center_image,
-            right: trial.right_image
-          };
+  // --- Load JSON and create trials ---
+  fetch('test_order.json')
+    .then(response => response.json())
+    .then(data => {
+      // Randomly select one order
+      const orderNames = Object.keys(data);
+      const selectedOrderName = orderNames[Math.floor(Math.random() * orderNames.length)];
+      console.log("Selected order:", selectedOrderName);
+      const selectedOrder = data[selectedOrderName];
 
-          // Find target position by matching target label to position labels
-          let target_position = null;
-          for (const pos in positionToLabel) {
-            if (positionToLabel[pos] === trial.target) {
-              target_position = pos;
-              break;
-            }
+      // Create jsPsych trials array
+      const testTrials = selectedOrder.map(trial => {
+        // Map positions to object labels (names)
+        const positionToLabel = {
+          left: trial.left,
+          center: trial.center,
+          right: trial.right
+        };
+
+        // Map positions to image IDs for display
+        const positionToImage = {
+          left: trial.left_image,
+          center: trial.center_image,
+          right: trial.right_image
+        };
+
+        // Find target position by matching target label to position labels
+        let target_position = null;
+        for (const pos in positionToLabel) {
+          if (positionToLabel[pos] === trial.target) {
+            target_position = pos;
+            break;
           }
+        }
 
-          // Get foils (positions & labels not target)
-          const foils = Object.entries(positionToLabel).filter(([pos, label]) => label !== trial.target);
-          const [[foil_1_position, foil_1_object_id], [foil_2_position, foil_2_object_id]] = foils;
+        // Get foils (positions & labels not target)
+        const foils = Object.entries(positionToLabel).filter(([pos, label]) => label !== trial.target);
+        const [[foil_1_position, foil_1_object_id], [foil_2_position, foil_2_object_id]] = foils;
 
-          return {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: `
+        return {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `
               <div class="triangle-container">
                 <div class="top-row">
-                  <img src="img/${trial.center_image}.jpg" id="img0">
+                  <img src="${trial.center_image}.jpg" id="img0">
                 </div>
                 <div class="bottom-row">
-                  <img src="img/${trial.left_image}.jpg" id="img1">
-                  <img src="img/${trial.right_image}.jpg" id="img2">
+                  <img src="${trial.left_image}.jpg" id="img1">
+                  <img src="${trial.right_image}.jpg" id="img2">
                 </div>
               </div>
               <audio autoplay>
-                <source src="audio/${trial.question_soundfile}" type="audio/wav">
+                <source src="Experimenter voice recordings/${trial.question_soundfile}" type="audio/wav">
               </audio>
             `,
-            choices: "NO_KEYS",
-            on_load: function() {
-              const imgs = document.querySelectorAll('.triangle-container img');
-              imgs.forEach((img, i) => {
-                img.addEventListener('click', () => {
-                  // remove highlight from all
-                  imgs.forEach(im => im.classList.remove('selected'));
-                  // highlight clicked
-                  img.classList.add('selected');
-                  // Map click index to position
-                  const response_position = i === 0 ? 'center' : (i === 1 ? 'left' : 'right');
-                  // Record label of clicked object
-                  const response_object_id = positionToLabel[response_position];
-                  setTimeout(() => jsPsych.finishTrial({
-                    test_trial_number: trial.trial_number,
-                    target_object_id: trial.target,
-                    target_object_position: target_position,
-                    foil_1_object_id: foil_1_object_id,
-                    foil_1_position: foil_1_position,
-                    foil_2_object_id: foil_2_object_id,
-                    foil_2_position: foil_2_position,
-                    sound_file: trial.question_soundfile,
-                    test_response_position: response_position,
-                    test_response_object_id: response_object_id
-                  }), 500);
-                });
+          choices: "NO_KEYS",
+          on_load: function () {
+            const imgs = document.querySelectorAll('.triangle-container img');
+            imgs.forEach((img, i) => {
+              img.addEventListener('click', () => {
+                // remove highlight from all
+                imgs.forEach(im => im.classList.remove('selected'));
+                // highlight clicked
+                img.classList.add('selected');
+                // Map click index to position
+                const response_position = i === 0 ? 'center' : (i === 1 ? 'left' : 'right');
+                // Record label of clicked object
+                const response_object_id = positionToLabel[response_position];
+                setTimeout(() => jsPsych.finishTrial({
+                  test_trial_number: trial.trial_number,
+                  target_object_id: trial.target,
+                  target_object_position: target_position,
+                  foil_1_object_id: foil_1_object_id,
+                  foil_1_position: foil_1_position,
+                  foil_2_object_id: foil_2_object_id,
+                  foil_2_position: foil_2_position,
+                  sound_file: trial.question_soundfile,
+                  test_response_position: response_position,
+                  test_response_object_id: response_object_id
+                }), 500);
               });
-            }
-          };
-        });
+            });
+          }
+        };
+      });
 
-        // Run the experiment: start button first, then trials
-        jsPsych.run([start_trial, ...testTrials]);
-      })
-      .catch(err => console.error("Error loading JSON:", err));
-  </script>
+      // Run the experiment: start button first, then trials
+      jsPsych.run([start_trial, ...testTrials]);
+    })
+    .catch(err => console.error("Error loading JSON:", err));
+</script>
+
 </html>
