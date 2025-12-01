@@ -19,9 +19,9 @@ function highlight(id, options = {}) {
 function Informant_intro_people() {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-    var aud_info_intro_people = new Audio('assets/Experimenter voice recordings/Informant_intro_people.m4a');
-    var aud_info_intro_kid = new Audio('assets/Experimenter voice recordings/Informant_intro_kid.m4a');
-    var aud_info_intro_grownup = new Audio('assets/Experimenter voice recordings/Informant_intro_grownup.m4a');
+    var aud_info_intro_people = new Audio('assets/Experimenter voice recordings/informant_intro/exp_2_people_jb.wav');
+    var aud_info_intro_kid = new Audio('assets/Experimenter voice recordings/informant_intro/exp_kid_jb.wav');
+    var aud_info_intro_grownup = new Audio('assets/Experimenter voice recordings/informant_intro/exp_parents_jb.wav');
     aud_info_intro_people.play();
 
     aud_info_intro_people.onended = async function () {
@@ -207,9 +207,17 @@ const knowledge_screen_html_template = (imgPath, highlightChild = false, highlig
     const ADULT_IMAGE = "assets/img/adult_informant.png";
     return `
             <div id="triangle-container">
-            <img id="object-small"  src="assets/img/${imgPath}" >
-            <img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}">
-            <img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}">
+                <div style="text-align:center">
+                    <img id="object-small"  src="assets/img/${imgPath}" >
+                </div>
+                <div id="choose-container" >
+                    <div style="text-align:center">
+                        <img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;">
+                    </div>
+                    <div style="text-align:center">
+                        <img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;">
+                    </div>    
+                </div>    
             </div>`;
 };
 
@@ -288,7 +296,7 @@ function knowledgeAttributionSequence(objName, imgPath) {
 function play_object_intro(audioSrc) {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-    var audio = new Audio("assets/Experimenter voice recordings/" + audioSrc);
+    var audio = new Audio("assets/Experimenter voice recordings/teaching_segment/" + audioSrc);
 
     var promise = audio.play();
     if (promise !== undefined) {
@@ -374,19 +382,22 @@ function createRepeatNameTrial(trial, imgPath, lastChoice) {
     const seq = [];
 
     const selectedInformant = lastChoice === "child" ? "child" : "adult";
-    const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
-    const teaching_audio = `assets/Experimenter voice recordings/${teachingAudio}`;
+    const teachingAudio = selectedInformant === "child" ? trial.repeat_sound_file_child : trial.repeat_sound_file_adult;
+    const teaching_audio = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${teachingAudio}`;
 
 
     repeat_html_template = () => `
-          <div style="display:flex;justify-content:center">
-            <div>Can you help me say the name of the object?</div>
+        <div style="display:block;justify-content:center">
+            <div style="font-size: 30px; font-weight: bold; margin-bottom: 10px;" >
+                Can you help me say the name of the object?
+            </div>
             </br>
-            <div>${trial.obj_name}</div>
-          </div>`
-    const audioPath = `assets/Experimenter voice recordings/Name_of_object.m4a`;
+            <div style="font-size: 64px; font-weight: bold; color: orange; margin-top: 8px">${trial.obj_name}</div>
+            </br>
+        </div>`
+    //const audioPath = `assets/Experimenter voice recordings/Name_of_object.m4a`;
 
-    seq.push(createAudioTrial(repeat_html_template(imgPath), audioPath))
+    //seq.push(createAudioTrial(repeat_html_template(imgPath), audioPath))
     seq.push(createAudioTrial(repeat_html_template(imgPath), teaching_audio))
     seq.push({
         type: jsPsychHtmlButtonResponse,
@@ -406,17 +417,106 @@ function createRepeatNameTrial(trial, imgPath, lastChoice) {
 function teachingTrial(trial, imgPath, lastChoice) {
 
     const selectedInformant = lastChoice === "child" ? "child" : "adult";
-    const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
-    const audioPath = `assets/Experimenter voice recordings/${teachingAudio}`;
+    const teachingAudio = selectedInformant === "child" ? trial.repeat_sound_file_child : trial.repeat_sound_file_adult;
+    const audioPath = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${teachingAudio}`;
     const seq = [];
-
+    console.log("TEACHING AUDIO PATH:", audioPath);
 
     teaching_image_html_template = (imgPath) => `
           <div style="display:flex;justify-content:center">
-            <img id="full-image" style="max-width:60%" src="assets/img/${imgPath}">
+            <img id="full-image" src="assets/img/${imgPath}">
           </div>`
 
     seq.push(createAudioTrial(teaching_image_html_template(imgPath), audioPath))
 
     return seq;
 }
+
+
+/**
+ * Create a 3-image test trial sequence.
+ * Returns an array: [audioDisplayTrial, selectionTrial]
+ * - audioDisplayTrial: shows images but is non-clickable while question audio plays
+ * - selectionTrial: same layout but images are clickable; resolves selection
+*/
+function createTestTrial(trial) {
+    // helper to build the stimulus HTML: center image on first row, left/right below
+    const stimHtml = (clickable = false) => `
+        <div id="triangle-container">
+            <div style="text-align:center">
+                <img id="center-choice" src="assets/img/${trial.center_image}.jpg" style="max-width:320px; width:100%; height:auto;" ${clickable ? '' : 'style="pointer-events:none;opacity:0.95;"'}>
+            </div>
+            <div id="choose-container" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px;">
+                <div style="text-align:center">
+                    <img id="left-choice" src="assets/img/${trial.left_image}.jpg" style="max-width:260px; width:100%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
+                </div>
+                <div style="text-align:center">
+                    <img id="right-choice" src="assets/img/${trial.right_image}.jpg" style="max-width:260px; width:100%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
+                </div>
+            </div>
+        </div>`;
+
+    const audioSrc = `assets/${trial.question_soundfile}`;
+
+    // 1) audio display trial — shows images but non-clickable; finishes when audio ends
+    const audioDisplay = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: stimHtml(false),
+        choices: [],
+        on_load: () => {
+            const audio = new Audio(audioSrc);
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                });
+            }
+            audio.onended = () => jsPsych.finishTrial();
+        },
+        data: { trial_type: 'test_audio_display', trial_number: trial.trial_number, target: trial.target }
+    };
+
+    // 2) selection trial — same layout but images clickable; resolves selection
+    const selectionTrial = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: stimHtml(true),
+        choices: [],
+        on_load: () => {
+            const leftEl = document.getElementById('left-choice');
+            const centerEl = document.getElementById('center-choice');
+            const rightEl = document.getElementById('right-choice');
+
+            let finished = false;
+            function finishWith(choiceId, label) {
+                if (finished) return;
+                finished = true;
+                // visual feedback
+                [leftEl, centerEl, rightEl].forEach(el => el.style.outline = '');
+                const chosen = document.getElementById(choiceId);
+                if (chosen) chosen.style.outline = '6px solid rgba(50,115,220,0.45)';
+
+                // cleanup
+                leftEl && leftEl.removeEventListener('click', leftHandler);
+                centerEl && centerEl.removeEventListener('click', centerHandler);
+                rightEl && rightEl.removeEventListener('click', rightHandler);
+
+                setTimeout(() => {
+                    jsPsych.finishTrial({ trial_type: 'test_choice', trial_number: trial.trial_number, target: trial.target, choice: label });
+                }, 500);
+                //jsPsych.finishTrial({ trial_type: 'test_choice', trial_number: trial.trial_number, target: trial.target, choice: label });
+            }
+
+            function leftHandler() { finishWith('left-choice', trial.left); }
+            function centerHandler() { finishWith('center-choice', trial.center); }
+            function rightHandler() { finishWith('right-choice', trial.right); }
+
+            leftEl && leftEl.addEventListener('click', leftHandler);
+            centerEl && centerEl.addEventListener('click', centerHandler);
+            rightEl && rightEl.addEventListener('click', rightHandler);
+        },
+        data: { trial_type: 'test_selection', trial_number: trial.trial_number, target: trial.target }
+    };
+
+    return [audioDisplay, selectionTrial];
+}
+

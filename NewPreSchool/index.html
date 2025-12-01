@@ -35,14 +35,6 @@
 
     // screen 2: Informant
 
-    const informat_audio = {
-        type: 'preload', audio: [
-            'assets/Experimenter voice recordings/Informant_intro_people.m4a',
-            'assets/Experimenter voice recordings/Informant_intro_kid.m4a',
-            'assets/Experimenter voice recordings/Informant_intro_grownup.m4a'
-        ]
-    };
-
     const informat_html = '<div style="display:flex;gap:60px;justify-content:center">' +
         '<div style="text-align:center"><img id="adult_informant" src="assets/img/adult_informant.png" style="max-width:60%"></div>' +
         '<div style="text-align:center"><img id="child_informant" src="assets/img/child_informant.png" style="max-width:60%"></div>' +
@@ -78,8 +70,8 @@
     </div>`;
 
     const compCheckParams = {
-        "grownup": 'assets/Experimenter voice recordings/Informant_compre_grownup.m4a',
-        "kid": 'assets/Experimenter voice recordings/Informant_compre_kid.m4a',
+        "grownup": 'assets/Experimenter voice recordings/informant_intro/exp_grown_up_compre_jb.wav',
+        "kid": 'assets/Experimenter voice recordings/informant_intro/exp_kid_compre_2_jb.wav',
     };
 
 
@@ -97,12 +89,12 @@
     //3. Object Presentation
 
     (async () => {
-        const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/Knowledge_attribution_question.m4a";
-        const AUDIO_KNOWLEDGE_CHILD = "assets/Experimenter voice recordings/Learning_pref_child_followup.m4a";
-        const AUDIO_KNOWLEDGE_ADULT = "assets/Experimenter voice recordings/Learning_pref_adult_followup.m4a";
-        const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/Learning_preference_question.m4a";
-        const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/Learning_pref_child_followup.m4a";
-        const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/Learning_pref_adult_followup.m4a";
+        const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_know_q_jb.wav";
+        const AUDIO_KNOWLEDGE_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_know_child_jb.wav";
+        const AUDIO_KNOWLEDGE_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_know_adult_jb.wav";
+        const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_learn_q_jb.wav";
+        const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_learn_child_jb.wav";
+        const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_learn_adult_jb.wav";
 
         const teaching_order_data = await loadData('assets/teaching_order.json');
         // Randomly select one of the order keys
@@ -113,7 +105,7 @@
 
         image_html_template = (imgPath, type_soundfile) => `
           <div style="display:flex;justify-content:center">
-            <img id="full-image" style="max-width:60%" src="assets/img/${imgPath}">
+            <img id="full-image" src="assets/img/${imgPath}">
           </div>`
 
         trials.forEach((trial) => {
@@ -151,7 +143,7 @@
                 AUDIO_LEARNING_ADULT
             ));
 
-            const lastChoice = null;
+            const lastChoice = "adult";
             async (params) => {
                 lastChoice = jsPsych.data.get().last(1).values()[0].selection;
 
@@ -168,6 +160,48 @@
 
         });
     })();
+
+
+    (async () => {
+        const test_order_data = await loadData('assets/test_order.json');
+        // Randomly select one of the order keys
+        const orderKeys = Object.keys(test_order_data);
+        const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+        console.log("Selected test order key:", orderKey);
+        const test_trials = test_order_data[orderKey];
+
+        test_trials.forEach((trial) => {
+            const imgPath = `${trial.image_id}`;
+            console.log("Using test image path:", imgPath, "for", trial.obj_name);
+
+            timeline.push(...createTestTrial(trial));
+        });
+    })();
+
+    var Justification_screen1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Exploratory Justification Question</p>',
+        choices: ['Next']
+    };
+    timeline.push(Justification_screen1);
+
+    var Justification_screen2 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p style="font-size:100px;">?</p>',
+        choices: ['Finish'],
+        on_load: () => {
+            const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                });
+            }
+            audio.onended = () => jsPsych.finishTrial();
+        },
+    };
+    timeline.push(Justification_screen2);
+
 
 
     (async () => {

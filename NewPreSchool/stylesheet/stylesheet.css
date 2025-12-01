@@ -11,22 +11,52 @@ body {
 
 
 #triangle-container {
+    /* two-row layout: first row = single large object, second row = two selectable informants */
     display: grid;
-    grid-template-areas:
-        "object object"
-        "child adult";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    align-items: center;
+    gap: 32px;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* first direct child (object row) — center the single large image */
+#triangle-container>div:first-child {
+    grid-row: 1;
+    width: 35%;
+    display: flex;
+    justify-content: center;
+}
+
+/* second direct child (choose-container) — create a two-column area for the selectable images */
+#triangle-container>#choose-container {
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(360px, 1fr));
+    gap: 200px;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+}
+
+/* ensure each inner column centers its content */
+#choose-container>div {
+    display: flex;
     justify-content: center;
     align-items: center;
-    gap: 40px;
-    margin-top: 40px;
 }
 
 #triangle-container img {
-    max-width: 180px;
+    max-width: 100%;
+    height: auto;
     border-radius: 8px;
     cursor: pointer;
     border: 4px solid transparent;
-    transition: border-color 0.3s ease, transform 0.3s ease;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
 }
 
 #triangle-container img.highlight {
@@ -40,25 +70,25 @@ body {
 }
 
 #object-small {
-    grid-area: object;
-    max-width: 200px;
+    /* large object image in row 1 */
+    max-width: 560px;
+    width: 100%;
     cursor: default;
     border: none !important;
     justify-self: center;
 }
 
-#child-informant {
-    grid-area: child;
-    justify-self: end;
+/* choose-container images: constrain size so they appear balanced */
+#choose-container img {
+    max-width: 320px;
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
 }
 
-#adult-informant {
-    grid-area: adult;
-    justify-self: start;
-}
-
+/* keep a small full-image rule for other places */
 #full-image {
-    max-width: 300px;
+    max-width: 500px;
     margin: 60px auto 10px auto;
 }
 
