@@ -26,7 +26,7 @@ function Informant_intro_people() {
 
     aud_info_intro_people.onended = async function () {
         await sleep(1500);
-        highlight('child_informant', { scale: 1.4, duration: 2000, hold: 2000 });
+        highlight('child_choice', { scale: 1.4, duration: 2000, hold: 2000 });
         aud_info_intro_kid.play();
 
     };
@@ -34,7 +34,7 @@ function Informant_intro_people() {
     aud_info_intro_kid.onended = async function () {
         await sleep(1500);
         aud_info_intro_grownup.play();
-        highlight('adult_informant', { scale: 1.4, duration: 2000, hold: 2000 });
+        highlight('adult_choice', { scale: 1.4, duration: 2000, hold: 2000 });
     };
 
     aud_info_intro_grownup.onended = async function () {
@@ -75,7 +75,7 @@ function comp_check_load(informant, informant_audio_path) {
         // visual feedback
         [adultEl, childEl].forEach(el => el.style.outline = '');
         const chosenEl = document.getElementById(choiceId);
-        if (chosenEl) chosenEl.style.outline = '6px solid rgba(50,115,220,0.45)';
+        if (chosenEl) chosenEl.style.outline = '6px solid gold';
 
         // cleanup listeners
         cleanup();
@@ -200,7 +200,12 @@ function createSelectionTrial(objName, stage, imgPath) {
     };
 }
 
-const knowledge_screen_html_template = (imgPath, highlightChild = false, highlightAdult = false) => {
+const knowledge_screen_html_template = (
+    imgPath,
+    highlightChild = false,
+    highlightAdult = false,
+    child_opacity = 1,
+    adult_opacity = 1) => {
     const childClass = highlightChild ? 'highlight' : '';
     const adultClass = highlightAdult ? 'highlight' : '';
     const CHILD_IMAGE = "assets/img/child_informant.png";
@@ -212,10 +217,10 @@ const knowledge_screen_html_template = (imgPath, highlightChild = false, highlig
                 </div>
                 <div id="choose-container" >
                     <div style="text-align:center">
-                        <img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;">
+                        <img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;opacity:${child_opacity};">
                     </div>
                     <div style="text-align:center">
-                        <img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;">
+                        <img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;opacity:${adult_opacity};">
                     </div>    
                 </div>    
             </div>`;
@@ -332,37 +337,37 @@ function build_common_sequence(objName, seq_type, imgPath, audioQuestion, audioC
         audioQuestion
     ));
 
-    // 2. Child followup audio + highlight child icon
+    // // 2. Child followup audio + highlight child icon
     seq.push(createAudioTrial(
         knowledge_screen_html_template(imgPath, true, false),
         audioChild
     ));
 
-    // 3. Keep highlight 1.5s
+    // // 3. Keep highlight 1.5s
     seq.push(createPauseTrial(
         knowledge_screen_html_template(imgPath, true, false),
         1500
     ));
 
-    // 4. Remove highlight 0.5s
+    // // 4. Remove highlight 0.5s
     seq.push(createPauseTrial(
         knowledge_screen_html_template(imgPath, false, false),
         500
     ));
 
-    // 5. Adult followup audio + highlight adult icon
+    // // 5. Adult followup audio + highlight adult icon
     seq.push(createAudioTrial(
         knowledge_screen_html_template(imgPath, false, true),
         audioAdult
     ));
 
-    // 6. Keep highlight 1.5s
+    // // 6. Keep highlight 1.5s
     seq.push(createPauseTrial(
         knowledge_screen_html_template(imgPath, false, true),
         1500
     ));
 
-    // 7. Remove highlight 0.5s
+    // // 7. Remove highlight 0.5s
     seq.push(createPauseTrial(
         knowledge_screen_html_template(imgPath, false, false),
         500
@@ -414,18 +419,33 @@ function createRepeatNameTrial(trial, imgPath, lastChoice) {
     return seq;
 }
 
+function teaching_image_html_template(imgPath) {
+    return `
+        <div id="topright">
+            <img id="topright_holder" src="assets/img/child_informant.png" />
+        </div>
+          <div style="display:flex;justify-content:center">
+            <img id="full-image" src="assets/img/${imgPath}">
+          </div>`
+}
+
+// function teaching_image_html_template(imgPath) {
+//     return `
+//           <div style="display:flex;justify-content:center">
+//             <img id="full-image" src="assets/img/${imgPath}">
+//           </div>`
+// }
+
+
 function teachingTrial(trial, imgPath, lastChoice) {
 
+
     const selectedInformant = lastChoice === "child" ? "child" : "adult";
-    const teachingAudio = selectedInformant === "child" ? trial.repeat_sound_file_child : trial.repeat_sound_file_adult;
+    const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
     const audioPath = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${teachingAudio}`;
     const seq = [];
     console.log("TEACHING AUDIO PATH:", audioPath);
 
-    teaching_image_html_template = (imgPath) => `
-          <div style="display:flex;justify-content:center">
-            <img id="full-image" src="assets/img/${imgPath}">
-          </div>`
 
     seq.push(createAudioTrial(teaching_image_html_template(imgPath), audioPath))
 
@@ -493,7 +513,7 @@ function createTestTrial(trial) {
                 // visual feedback
                 [leftEl, centerEl, rightEl].forEach(el => el.style.outline = '');
                 const chosen = document.getElementById(choiceId);
-                if (chosen) chosen.style.outline = '6px solid rgba(50,115,220,0.45)';
+                if (chosen) chosen.style.outline = '6px solid gold';
 
                 // cleanup
                 leftEl && leftEl.removeEventListener('click', leftHandler);

@@ -22,7 +22,7 @@
 
     var jsPsych = initJsPsych();
 
-    timeline = []
+    timeline = [];
 
     // Screen 1: Welcome block
 
@@ -178,31 +178,34 @@
         });
     })();
 
-    var Justification_screen1 = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: '<p>Exploratory Justification Question</p>',
-        choices: ['Next']
-    };
-    timeline.push(Justification_screen1);
+    (async () => {
 
-    var Justification_screen2 = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: '<p style="font-size:100px;">?</p>',
-        choices: ['Finish'],
-        on_load: () => {
-            const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
-                });
-            }
-            audio.onended = () => jsPsych.finishTrial();
-        },
-    };
-    timeline.push(Justification_screen2);
+        var Justification_screen1 = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: '<p>Exploratory Justification Question</p>',
+            choices: ['Next']
+        };
+        timeline.push(Justification_screen1);
+
+        var Justification_screen2 = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: '<p style="font-size:100px;">?</p>',
+            choices: ['Finish'],
+            on_load: () => {
+                const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                    });
+                }
+                audio.onended = () => jsPsych.finishTrial();
+            },
+        };
+        timeline.push(Justification_screen2);
 
 
+    })();
 
     (async () => {
         console.log('built timeline:', timeline);

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jatos.js"></script>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+</body>
+<script>
+
+
+
+    var jsPsych = initJsPsych({
+        on_trial_start: jatos.addAbortButton,
+        on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
+    });
+
+    timeline = [];
+
+    // var welcome_block = {
+    //     type: jsPsychHtmlButtonResponse,
+    //     stimulus: '<p>Start the experiment</p>',
+    //     choices: ['Next']
+    // };
+    // timeline.push(welcome_block);
+
+
+    (async () => {
+        const test_order_data = await loadData('assets/test_order.json');
+        // Randomly select one of the order keys
+        const orderKeys = Object.keys(test_order_data);
+        const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+        console.log("Selected test order key:", orderKey);
+        const test_trials = test_order_data[orderKey];
+
+        test_trials.forEach((trial) => {
+            const imgPath = `${trial.image_id}`;
+            console.log("Using test image path:", imgPath, "for", trial.obj_name);
+
+            timeline.push(...createTestTrial(trial));
+        });
+    })();
+
+
+    (async () => {
+        jatos.onLoad(() => {
+            jsPsych.run(timeline);
+        });
+    })();
+
+</script>
+
+</html>
