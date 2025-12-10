@@ -2,18 +2,6 @@
   "test_order_1": [
     {
       "trial_number": 1,
-      "target": "Toma",
-      "question_speaker": "child",
-      "question_soundfile": "child/toma/child_find_toma_jlv.wav",
-      "left": "Toma",
-      "left_image": "2011-600",
-      "center": "Bosa",
-      "center_image": "2033-600",
-      "right": "Blicket",
-      "right_image": "2044b"
-    },
-    {
-      "trial_number": 2,
       "target": "Bosa",
       "question_speaker": "child",
       "question_soundfile": "child/bosa/child_find_bosa_jlv.wav",
@@ -23,6 +11,19 @@
       "center_image": "2011-600",
       "right": "Bosa",
       "right_image": "2033-600"
+    },
+    {
+      "trial_number": 2,
+      "target": "Toma",
+      "question_speaker": "child",
+      "question_soundfile": "child/toma/child_find_toma_jlv.wav",
+      "left": "Toma",
+      "left_image": "2011-600",
+      "center": "Bosa",
+      "center_image": "2033-600",
+      "right": "Blicket",
+      "right_image": "2044b"
+      
     },
     {
       "trial_number": 3,
@@ -148,15 +149,16 @@
   "test_order_2": [
     {
       "trial_number": 1,
-      "target": "Dax",
+      "target": "Gasser",
       "question_speaker": "adult",
-      "question_soundfile": "adult/dax/adult_where_dax_gf.wav",
-      "left": "Dax",
-      "left_image": "2052b",
-      "center": "Gasser",
-      "center_image": "2051c",
+      "question_soundfile": "adult/gasser/adult_where_gasser_gf.wav",
+      "left": "Gasser",
+      "left_image": "2051c",
+      "center": "Dax",
+      "center_image": "2052b",
       "right": "Coodle",
       "right_image": "2039c"
+      
     },
     {
       "trial_number": 2,
@@ -169,6 +171,7 @@
       "center_image": "2033-600",
       "right": "Blicket",
       "right_image": "2044b"
+      
     },
     {
       "trial_number": 3,
@@ -184,15 +187,16 @@
     },
     {
       "trial_number": 4,
-      "target": "Gasser",
+      "target": "Dax",
       "question_speaker": "adult",
-      "question_soundfile": "adult/gasser/adult_where_gasser_gf.wav",
-      "left": "Gasser",
-      "left_image": "2051c",
-      "center": "Dax",
-      "center_image": "2052b",
+      "question_soundfile": "adult/dax/adult_where_dax_gf.wav",
+      "left": "Dax",
+      "left_image": "2052b",
+      "center": "Gasser",
+      "center_image": "2051c",
       "right": "Coodle",
       "right_image": "2039c"
+      
     },
     {
       "trial_number": 5,
