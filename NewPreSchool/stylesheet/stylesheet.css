@@ -1,7 +1,8 @@
 .highlight-scale {
-    transition: transform 300ms ease;
-    transform: scale(1.25);
-    will-change: transform;
+    transform: scale(1.7);
+    box-shadow: 0 0 15px 5px gold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px
 }
 
 body {
@@ -26,7 +27,7 @@ body {
 /* first direct child (object row) — center the single large image */
 #triangle-container>div:first-child {
     grid-row: 1;
-    width: 35%;
+    width: 45%;
     display: flex;
     justify-content: center;
 }
@@ -66,7 +67,7 @@ body {
 }
 
 #triangle-container img.selected {
-    border-color: gold;
+    box-shadow: 0 0 15px 5px gold;
 }
 
 #object-small {
