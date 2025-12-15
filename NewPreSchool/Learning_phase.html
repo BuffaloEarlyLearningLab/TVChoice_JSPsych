@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -100,7 +101,10 @@
                         btn.disabled = true;
 
                         const toprightHolder = document.getElementById("topright_holder");
-                        toprightHolder.src = `assets/img/${selectedInformant}_informant.png`;
+                        toprightHolder.src =
+                            selectedInformant === "child"
+                                ? "assets/img/child_informant_2.png"
+                                : "assets/img/adult_informant.png";
 
                         const sleep = ms => new Promise(res => setTimeout(res, ms));
 

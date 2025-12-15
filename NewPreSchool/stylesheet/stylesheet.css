@@ -116,7 +116,7 @@ pre {
 }
 
 #topright img {
-    width: 360px;
+    width: min(150px, 20vw);
     height: auto;
     display: block;
 }
