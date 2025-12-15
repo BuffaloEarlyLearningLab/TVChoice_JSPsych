@@ -92,6 +92,10 @@
 
     console.log('built timeline:', timeline);
     jatos.onLoad(() => {
+		var id = jatos.urlQueryParameters.id;
+				console.log(id);
+		var order = jatos.urlQueryParameters.order;
+				console.log("Order received: " + order);
         jsPsych.run(timeline);
     });
     //jsPsych.run(timeline);
