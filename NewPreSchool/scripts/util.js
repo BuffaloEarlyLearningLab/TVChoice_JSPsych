@@ -28,30 +28,52 @@ function highlight(id, options = {}) {
 function Informant_intro_people() {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
 
+    order_info = {
+        "adult": {
+            "audio_path": AUDIO_INTRO_GROWNUP,
+            "element_id": "adult_choice",
+        },
+        "child": {
+            "audio_path": AUDIO_INTRO_KID,
+            "element_id": "child_choice",
+        }
+    }
+
+    if (Math.random() < 0.5) {
+        first = "adult";
+        last = "child";
+    }
+    else {
+        last = "adult";
+        first = "child";
+    }
+
+
     var aud_info_intro_people = new Audio(AUDIO_INTRO_PEOPLE);
-    var aud_info_intro_kid = new Audio(AUDIO_INTRO_KID);
-    var aud_info_intro_grownup = new Audio(AUDIO_INTRO_GROWNUP);
+    var audio1 = new Audio(order_info[first]["audio_path"]);
+    var audio2 = new Audio(order_info[last]["audio_path"]);
     aud_info_intro_people.play();
 
     aud_info_intro_people.onended = async function () {
         await sleep(1500);
-        highlight('child_choice', { scale: 1.4, duration: 2000, hold: 2000 });
-        aud_info_intro_kid.play();
+        highlight(order_info[first]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
+        audio1.play();
 
     };
 
-    aud_info_intro_kid.onended = async function () {
+    audio1.onended = async function () {
         await sleep(1500);
-        aud_info_intro_grownup.play();
-        highlight('adult_choice', { scale: 1.4, duration: 2000, hold: 2000 });
+        audio2.play();
+        highlight(order_info[last]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
     };
 
-    aud_info_intro_grownup.onended = async function () {
-        jsPsych.finishTrial();
+    audio2.onended = async function () {
+        const trialData = { "informant_intro_audio_order": first + "_then_" + last }
+        jsPsych.finishTrial(trialData);
     }
 }
 
-function comp_check_load(informant, informant_audio_path) {
+function comp_check_load(informant_audio_path) {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
     const adultEl = document.getElementById('adult_choice');
     const childEl = document.getElementById('child_choice');
@@ -63,7 +85,7 @@ function comp_check_load(informant, informant_audio_path) {
             el.style.cursor = 'not-allowed';
             el.style.opacity = 0.6;
         });
-        overlay.style.display = '';
+
     }
     function enableChoices() {
         [adultEl, childEl].forEach(el => {
@@ -71,10 +93,9 @@ function comp_check_load(informant, informant_audio_path) {
             el.style.cursor = 'pointer';
             el.style.opacity = 1;
         });
-        overlay.style.display = 'none';
     }
 
-    disableChoices
+
 
     let finished = false;
 
@@ -95,7 +116,7 @@ function comp_check_load(informant, informant_audio_path) {
 
         // trial data and finish
         const trialData = { informant_choice: choiceId, informant_audio: informant_audio_path };
-
+        //console.log(trialData)
 
         jsPsych.finishTrial(trialData);
     }
@@ -185,7 +206,7 @@ function createPauseTrial(stimulusHtml, duration) {
 /***************************************************************
 * Helper: selection screen (for user choice)
 ***************************************************************/
-function createSelectionTrial(trial, seq_type, imgPath) {
+function createSelectionTrial(trial, seq_type, imgPath, order) {
     return {
         type: jsPsychHtmlButtonResponse,
         stimulus: knowledge_screen_html_template(imgPath),
@@ -212,7 +233,8 @@ function createSelectionTrial(trial, seq_type, imgPath) {
                             object: trial.obj_name,
                             object_type: trial.type,
                             seq_type: seq_type,
-                            selection: choice
+                            selection: choice,
+                            "audio_order": order[0] + "_then_" + order[1],
                         });
                 }, 500);
             }
@@ -289,44 +311,44 @@ function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChi
         audioQuestion
     ));
 
-    // // 2. Child followup audio + highlight child icon
-    seq.push(createAudioTrial(
-        knowledge_screen_html_template(imgPath, true, false),
-        audioChild
-    ));
+    order = ["child", "adult"]
+    if (Math.random() < 0.5) {
+        order = ["adult", "child"]
+    }
 
-    // // 3. Keep highlight 1.5s
-    seq.push(createPauseTrial(
-        knowledge_screen_html_template(imgPath, true, false),
-        1500
-    ));
+    order_info = {
+        "child": {
+            "audio_path": audioChild,
+        },
+        "adult": {
+            "audio_path": audioAdult,
+        }
+    };
+    //console.log(order)
+    order.forEach((informant) => {
 
-    // // 4. Remove highlight 0.5s
-    seq.push(createPauseTrial(
-        knowledge_screen_html_template(imgPath, false, false),
-        500
-    ));
+        // // 2. followup audio + highlight child icon
+        seq.push(createAudioTrial(
+            knowledge_screen_html_template(imgPath, (informant === "child"), (informant === "adult")),
+            order_info[informant]["audio_path"]
+        ));
 
-    // // 5. Adult followup audio + highlight adult icon
-    seq.push(createAudioTrial(
-        knowledge_screen_html_template(imgPath, false, true),
-        audioAdult
-    ));
+        // // 3. Keep highlight 1.5s
+        seq.push(createPauseTrial(
+            knowledge_screen_html_template(imgPath, (informant === "child"), (informant === "adult")),
+            1500
+        ));
+        // // 4. Remove highlight 0.5s
+        seq.push(createPauseTrial(
+            knowledge_screen_html_template(imgPath, false, false),
+            500
+        ));
+    });
 
-    // // 6. Keep highlight 1.5s
-    seq.push(createPauseTrial(
-        knowledge_screen_html_template(imgPath, false, true),
-        1500
-    ));
 
-    // // 7. Remove highlight 0.5s
-    seq.push(createPauseTrial(
-        knowledge_screen_html_template(imgPath, false, false),
-        500
-    ));
 
     // 8. Choice trial
-    seq.push(createSelectionTrial(trial, seq_type, imgPath));
+    seq.push(createSelectionTrial(trial, seq_type, imgPath, order));
 
     return seq;
 }

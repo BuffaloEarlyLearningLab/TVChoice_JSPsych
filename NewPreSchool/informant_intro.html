@@ -42,27 +42,38 @@
 
     // screen 2: Informant
 
-    const informat_html = `<div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
+    if (Math.random() < 0.5) {
+        left = "adult";
+        right = "child";
+    }
+    else {
+        right = "adult";
+        left = "child";
+    }
+
+    const informat_html = (left, right) => `<div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
       <div style="text-align:center">
-        <img id="adult_choice" src="assets/img/adult_informant.png"  style="max-width:60%;cursor:not-allowed;opacity:1" />
+        <img id="${left}_choice" src="assets/img/${left}_informant.png"  style="max-width:60%;cursor:not-allowed;opacity:1" />
       </div>
       <div style="text-align:center">
-        <img id="child_choice" src="assets/img/child_informant.png" style="max-width:60%;cursor:not-allowed;opacity:1" />
+        <img id="${right}_choice" src="assets/img/${right}_informant.png" style="max-width:60%;cursor:not-allowed;opacity:1" />
       </div>
     </div>`;
 
     var informat_main = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: informat_html,
+        stimulus: informat_html(left, right),
         choices: "NO_KEYS",
-        on_load: Informant_intro_people,
-        record_data: false,
+        on_load: function () {
+            Informant_intro_people(left, right)
+        },
+        data: { "informant_intro_display_order": "left_" + left + "_right_" + right },
     };
     timeline.push(informat_main);
 
     var informat_end = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: informat_html,
+        stimulus: informat_html(left, right),
         choices: ['Next'],
         response_ends_trial: true,
         record_data: false,
@@ -74,23 +85,37 @@
 
 
     const compCheckParams = {
-        "grownup": 'assets/Experimenter voice recordings/informant_intro/exp_grown_up_compre_jb.wav',
-        "kid": 'assets/Experimenter voice recordings/informant_intro/exp_kid_compre_2_jb.wav',
+        "adult": 'assets/Experimenter voice recordings/informant_intro/exp_grown_up_compre_jb.wav',
+        "child": 'assets/Experimenter voice recordings/informant_intro/exp_kid_compre_2_jb.wav',
     };
-
-
-    for (let informant in compCheckParams) {
-        timeline.push({
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: informat_html,
-            choices: "NO_KEYS",
-            on_load: function () { comp_check_load(informant, compCheckParams[informant]); }
-
-        });
+    if (Math.random() < 0.5) {
+        first = "adult";
+        last = "child";
     }
+    else {
+        last = "adult";
+        first = "child";
+    }
+    console.log(first, last);
+    timeline.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html(left, right),
+        choices: "NO_KEYS",
+        on_load: function () { comp_check_load(compCheckParams[first]); },
+        data: { "comp_check_order": first + "_then_" + last }
 
+    });
 
-    console.log('built timeline:', timeline);
+    timeline.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html(left, right),
+        choices: "NO_KEYS",
+        on_load: function () { comp_check_load(compCheckParams[last]); },
+        data: { "comp_check_order": first + "_then_" + last }
+
+    });
+
+    //console.log('built timeline:', timeline);
     jatos.onLoad(() => {
         jsPsych.run(timeline);
     });
