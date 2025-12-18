@@ -30,7 +30,10 @@
                 "order_test": jatos.urlQueryParameters.order_test
             };
             jatos.setStudySessionData(session_data);
-
+            jsPsych.data.addProperties({
+                "participant_id": jatos.studySessionData.id,
+                "test_order": "test_order_" + jatos.studySessionData.order_test,
+            });
         },
         on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
     });
@@ -54,10 +57,10 @@
                 //const orderKeys = Object.keys(test_order_data);
                 const orderKey = "test_order_" + jatos.studySessionData.order_test;
                 //console.log("Selected test order key:", orderKey);
-                var resultData = { "test_order_key": orderKey };
+                // var resultData = { "test_order_key": orderKey };
                 const test_trials = test_order_data[orderKey];
-                var resultData = { "id": jatos.studySessionData.id, "testing_order": orderKey };
-                jatos.appendResultData(resultData);
+                // var resultData = { "id": jatos.studySessionData.id, "testing_order": orderKey };
+                // jatos.appendResultData(resultData);
 
                 test_trials.forEach((trial) => {
                     const imgPath = `${trial.image_id}`;
@@ -69,7 +72,7 @@
             });
         })
         .catch((e) => {
-            console.error("Error loading teaching_order.json:", e);
+            console.error("Error loading test_order.json:", e);
             document.body.innerHTML = "<h2>Error loading data.</h2>";
         });
 

@@ -30,7 +30,7 @@
                 "order_test": jatos.urlQueryParameters.order_test
             };
             jatos.setStudySessionData(session_data);
-
+            jsPsych.data.addProperties({ "participant_id": jatos.studySessionData["id"] });
             //console.log("Study session data set to:", jatos.studySessionData);
         },
         on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())

@@ -30,7 +30,10 @@
                 "order_test": jatos.urlQueryParameters.order_test
             };
             jatos.setStudySessionData(session_data);
-
+            jsPsych.data.addProperties({
+                "participant_id": jatos.studySessionData.id,
+                "teach_order": "order_" + jatos.studySessionData.order_teach,
+            });
             //console.log("Study session data set to:", jatos.studySessionData);
         },
         on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
@@ -65,8 +68,8 @@
                 //const orderKeys = Object.keys(teaching_order_data);
                 //const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
                 //console.log("Selected order key:", orderKey);
-                var resultData = { "id": jatos.studySessionData.id, "learning_order_key": orderKey };
-                jatos.appendResultData(resultData);
+                //var resultData = { "id": jatos.studySessionData.id, "learning_order_key": orderKey };
+                //jatos.appendResultData(resultData);
                 const trials = teaching_order_data[orderKey];
 
 
@@ -119,10 +122,8 @@
                                 btn.disabled = true;
 
                                 const toprightHolder = document.getElementById("topright_holder");
-                                toprightHolder.src =
-                                    selectedInformant === "child"
-                                        ? "assets/img/child_informant_2.png"
-                                        : "assets/img/adult_informant.png";
+                                toprightHolder.src = `assets/img/${selectedInformant}_informant.png`;
+
                                 const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 
