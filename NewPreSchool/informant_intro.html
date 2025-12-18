@@ -19,14 +19,31 @@
 </body>
 <script>
 
-
+    // http://localhost:9000/publix/fsNGQhLj5FJ?order_teach=2&id=12&order_test=1
 
     var jsPsych = initJsPsych({
         //on_trial_start: jatos.addAbortButton,
+        on_trial_start: function () {
+            session_data = {
+                "id": jatos.urlQueryParameters.id,
+                "order_teach": jatos.urlQueryParameters.order_teach,
+                "order_test": jatos.urlQueryParameters.order_test
+            };
+            jatos.setStudySessionData(session_data);
+
+            //console.log("Study session data set to:", jatos.studySessionData);
+        },
         on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
     });
 
+    //console.log("ID retrieved from URL parameters: ", jatos.studySessionData["id"]);
     //var jsPsych = initJsPsych();
+    // var should_start_experiment = true;
+    // if (1 <= jatos.studySessionData["order_teach"] <= 2) {
+    //     should_start_experiment = false;
+    //     jatos.abortStudy("participant aborted by pressing abort button");
+    // }
+
 
     timeline = []
 
@@ -37,6 +54,15 @@
         stimulus: '<p>Start the experiment</p>',
         choices: ['Next'],
         record_data: false,
+        on_load: function () {
+
+            if (parseInt(jatos.studySessionData["order_teach"]) > 2) {
+                jatos.endStudy(false, "Enter correct Teaching order value to proceed");
+            }
+            if (parseInt(jatos.studySessionData["order_test"]) > 2) {
+                jatos.endStudy(false, "Enter correct Test order value to proceed");
+            }
+        },
     };
     timeline.push(welcome_block);
 
