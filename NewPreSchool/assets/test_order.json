@@ -17,10 +17,10 @@
       "target": "Toma",
       "question_speaker": "child",
       "question_soundfile": "child/toma/child_find_toma_jlv.wav",
-      "left": "Toma",
-      "left_image": "2011-600",
-      "center": "Bosa",
-      "center_image": "2033-600",
+      "left": "Bosa",
+      "left_image": "2033-600",
+      "center": "Toma",
+      "center_image": "2011-600",
       "right": "Blicket",
       "right_image": "2044b"
       
@@ -30,10 +30,10 @@
       "target": "Coodle",
       "question_speaker": "adult",
       "question_soundfile": "adult/coodle/adult_where_coodle_gf.wav",
-      "left": "Dax",
-      "left_image": "2052b",
-      "center": "Coodle",
-      "center_image": "2039c",
+      "left": "Coodle",
+      "left_image": "2039c",
+      "center": "Dax",
+      "center_image": "2052b",
       "right": "Gasser",
       "right_image": "2051c"
     },
@@ -78,12 +78,12 @@
       "target": "Bosa",
       "question_speaker": "adult",
       "question_soundfile": "adult/bosa/adult_where_bosa_gf.wav",
-      "left": "Toma",
-      "left_image": "2011-600",
+      "left": "Bosa",
+      "left_image": "2033-600",
       "center": "Blicket",
       "center_image": "2044b",
-      "right": "Bosa",
-      "right_image": "2033-600"
+      "right": "Toma",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 8,
@@ -92,22 +92,22 @@
       "question_soundfile": "child/coodle/child_find_coodle_jlv.wav",
       "left": "Dax",
       "left_image": "2052b",
-      "center": "Coodle",
-      "center_image": "2039c",
-      "right": "Gasser",
-      "right_image": "2051c"
+      "center": "Gasser",
+      "center_image": "2051c",
+      "right": "Coodle",
+      "right_image": "2039c"
     },
     {
       "trial_number": 9,
       "target": "Gasser",
       "question_speaker": "adult",
       "question_soundfile": "adult/gasser/adult_where_gasser_gf.wav",
-      "left": "Gasser",
-      "left_image": "2051c",
-      "center": "Dax",
-      "center_image": "2052b",
-      "right": "Coodle",
-      "right_image": "2039c"
+      "left": "Coodle",
+      "left_image": "2039c",
+      "center": "Gasser",
+      "center_image": "2051c",
+      "right": "Dax",
+      "right_image": "2052b"
     },
     {
       "trial_number": 10,
@@ -116,10 +116,10 @@
       "question_soundfile": "adult/toma/adult_where_toma_gf.wav",
       "left": "Blicket",
       "left_image": "2044b",
-      "center": "Toma",
-      "center_image": "2011-600",
-      "right": "Bosa",
-      "right_image": "2033-600"
+      "center": "Bosa",
+      "center_image": "2033-600",
+      "right": "Toma",
+      "right_image": "2011-600"
     },
     {
       "trial_number": 11,
@@ -128,10 +128,10 @@
       "question_soundfile": "child/blicket/child_find_blicket_jlv.wav",
       "left": "Toma",
       "left_image": "2011-600",
-      "center": "Bosa",
-      "center_image": "2033-600",
-      "right": "Blicket",
-      "right_image": "2044b"
+      "center": "Blicket",
+      "center_image": "",
+      "right": "Bosa",
+      "right_image": "2033-600"
     },
     {
       "trial_number": 12,
@@ -152,13 +152,12 @@
       "target": "Gasser",
       "question_speaker": "adult",
       "question_soundfile": "adult/gasser/adult_where_gasser_gf.wav",
-      "left": "Gasser",
-      "left_image": "2051c",
-      "center": "Dax",
-      "center_image": "2052b",
+      "left": "Dax",
+      "left_image": "2052b",
+      "center": "Gasser",
+      "center_image": "2051c",
       "right": "Coodle",
       "right_image": "2039c"
-      
     },
     {
       "trial_number": 2,
@@ -171,7 +170,6 @@
       "center_image": "2033-600",
       "right": "Blicket",
       "right_image": "2044b"
-      
     },
     {
       "trial_number": 3,
@@ -196,61 +194,24 @@
       "center_image": "2051c",
       "right": "Coodle",
       "right_image": "2039c"
-      
     },
     {
       "trial_number": 5,
       "target": "Coodle",
       "question_speaker": "child",
       "question_soundfile": "child/coodle/child_find_coodle_jlv.wav",
-      "left": "Dax",
-      "left_image": "2052b",
-      "center": "Coodle",
-      "center_image": "2039c",
-      "right": "Gasser",
-      "right_image": "2051c"
+      "left": "Gasser",
+      "left_image": "2051c",
+      "center": "Dax",
+      "center_image": "2052b",
+      "right": "Coodle",
+      "right_image": "2039c"
     },
     {
       "trial_number": 6,
       "target": "Bosa",
       "question_speaker": "adult",
       "question_soundfile": "adult/bosa/adult_where_bosa_gf.wav",
-      "left": "Toma",
-      "left_image": "2011-600",
-      "center": "Blicket",
-      "center_image": "2044b",
-      "right": "Bosa",
-      "right_image": "2033-600"
-    },
-    {
-      "trial_number": 7,
-      "target": "Dax",
-      "question_speaker": "child",
-      "question_soundfile": "child/dax/child_find_dax_jlv.wav",
-      "left": "Coodle",
-      "left_image": "2039c",
-      "center": "Dax",
-      "center_image": "2052b",
-      "right": "Gasser",
-      "right_image": "2051c"
-    },
-    {
-      "trial_number": 8,
-      "target": "Gasser",
-      "question_speaker": "child",
-      "question_soundfile": "child/gasser/child_find_gasser_jlv.wav",
-      "left": "Gasser",
-      "left_image": "2051c",
-      "center": "Coodle",
-      "center_image": "2039c",
-      "right": "Dax",
-      "right_image": "2052b"
-    },
-    {
-      "trial_number": 9,
-      "target": "Blicket",
-      "question_speaker": "adult",
-      "question_soundfile": "adult/blicket/adult_where_blicket_gf.wav",
       "left": "Bosa",
       "left_image": "2033-600",
       "center": "Toma",
@@ -259,14 +220,50 @@
       "right_image": "2044b"
     },
     {
-      "trial_number": 10,
-      "target": "Coodle",
-      "question_speaker": "adult",
-      "question_soundfile": "adult/coodle/adult_where_coodle_gf.wav",
+      "trial_number": 7,
+      "target": "Dax",
+      "question_speaker": "child",
+      "question_soundfile": "child/dax/child_find_dax_jlv.wav",
+      "left": "Gasser",
+      "left_image": "2051c",
+      "center": "Dax",
+      "center_image": "2052b",
+      "right": "Coodle",
+      "right_image": "2039c"
+    },
+    {
+      "trial_number": 8,
+      "target": "Gasser",
+      "question_speaker": "child",
+      "question_soundfile": "child/gasser/child_find_gasser_jlv.wav",
       "left": "Dax",
       "left_image": "2052b",
       "center": "Coodle",
       "center_image": "2039c",
+      "right": "Gasser",
+      "right_image": "2051c"
+    },
+    {
+      "trial_number": 9,
+      "target": "Blicket",
+      "question_speaker": "adult",
+      "question_soundfile": "adult/blicket/adult_where_blicket_gf.wav",
+      "left": "Bosa",
+      "left_image": "2033-600",
+      "center": "Blicket",
+      "center_image": "2044b",
+      "right": "Toma",
+      "right_image": "2011-600"
+    },
+    {
+      "trial_number": 10,
+      "target": "Coodle",
+      "question_speaker": "adult",
+      "question_soundfile": "adult/coodle/adult_where_coodle_gf.wav",
+      "left": "Coodle",
+      "left_image": "2039c",
+      "center": "Dax",
+      "center_image": "2052b",
       "right": "Gasser",
       "right_image": "2051c"
     },
