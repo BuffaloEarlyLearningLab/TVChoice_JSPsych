@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jatos.js"></script>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+</body>
+<script>
+
+
+
+    var jsPsych = initJsPsych({
+        // on_trial_start: jatos.addAbortButton,
+        on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
+    });
+
+    timeline = []
+
+    var explaination1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p style="font-size:100px;">?</p>',
+        choices: ['Next'],
+        on_load: () => {
+            const audio = new Audio("assets/Experimenter voice recordings/familiarization_phase/exp_use_toy_q_jb.wav");
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                });
+            }
+        },
+    };
+    timeline.push(explaination1);
+
+    var explaination2 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p style="font-size:100px;">?</p>',
+        choices: ['Next'],
+        on_load: () => {
+            const audio = new Audio("assets/Experimenter voice recordings/familiarization_phase/exp_use_tool_q_jb.wav");
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                });
+            }
+        },
+    };
+    timeline.push(explaination2);
+
+    console.log('built timeline:', timeline);
+    jatos.onLoad(() => {
+        jsPsych.run(timeline);
+    });
+
+</script>
+
+</html>
