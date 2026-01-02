@@ -520,7 +520,7 @@ function createTestTrial(trial) {
             <div style="text-align:center">
                 <img id="center-choice" src="assets/img/${trial.center_image}.jpg" style="max-width:320px; width:100%; height:auto;" ${clickable ? '' : 'style="pointer-events:none;opacity:0.9;"'}>
             </div>
-            <div id="choose-container" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px;">
+            <div id="choose-container" style="display:grid;grid-template-columns:1fr 1fr;gap:200px;margin-top:100px;">
                 <div style="text-align:center">
                     <img id="left-choice" src="assets/img/${trial.left_image}.jpg" style="max-width:260px; width:100%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
                 </div>
