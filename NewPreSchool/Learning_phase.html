@@ -76,17 +76,17 @@
                 trials.forEach((trial) => {
                     const imgPath = `${trial.image_id}`;
                     //console.log("Using image path:", imgPath, "for", trial.obj_name);
-
+                    informant_order = (Math.random() < 0.5 ? true : false);
                     // Stage 1: object introduction audio
                     var object_intro = {
                         type: jsPsychHtmlKeyboardResponse,
-                        stimulus: knowledge_screen_html_template(imgPath, true, false, 0, 0),
+                        stimulus: knowledge_screen_html_template(imgPath, informant_order, false, false, 0, 0),
                         choices: "NO_KEYS",
                         on_load: function () { play_object_intro(trial.type_soundfile); },
                         record_data: false,
                         data: { trial_type: "stage_1", obj_name: trial.obj_name }
                     };
-                    // push stage 1: object introduction (plays its own audio)
+                    //push stage 1: object introduction (plays its own audio)
                     timeline.push(object_intro);
 
                     //push the knowledge-attribution sequence for this object (flattened)
@@ -96,17 +96,19 @@
                         imgPath,
                         AUDIO_KNOWLEDGE_QUESTION,
                         AUDIO_KNOWLEDGE_CHILD,
-                        AUDIO_KNOWLEDGE_ADULT
+                        AUDIO_KNOWLEDGE_ADULT,
+                        informant_order
                     ));
 
-                    //push the learning-preference sequence for this object (flattened) 
+                    // //push the learning-preference sequence for this object (flattened) 
                     timeline.push(...build_common_sequence(
                         trial,
                         'learning',
                         imgPath,
                         AUDIO_LEARNING_QUESTION,
                         AUDIO_LEARNING_CHILD,
-                        AUDIO_LEARNING_ADULT
+                        AUDIO_LEARNING_ADULT,
+                        informant_order
                     ));
 
                     timeline.push(

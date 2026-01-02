@@ -335,7 +335,7 @@ function createPauseTrial(stimulusHtml, duration) {
 function createSelectionTrial(trial, seq_type, imgPath, order) {
     return {
         type: jsPsychHtmlButtonResponse,
-        stimulus: knowledge_screen_html_template(imgPath),
+        stimulus: knowledge_screen_html_template(imgPath, informant_order),
         choices: [],
         on_load: () => {
             const child = document.getElementById('child-informant');
@@ -373,14 +373,24 @@ function createSelectionTrial(trial, seq_type, imgPath, order) {
 
 const knowledge_screen_html_template = (
     imgPath,
+    informant_order,
     highlightChild = false,
     highlightAdult = false,
     child_opacity = 1,
-    adult_opacity = 1) => {
+    adult_opacity = 1,
+) => {
     const childClass = highlightChild ? 'highlight' : '';
     const adultClass = highlightAdult ? 'highlight' : '';
     const CHILD_IMAGE = "assets/img/child_informant.png";
     const ADULT_IMAGE = "assets/img/adult_informant.png";
+    var first_tag = `<img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;opacity:${adult_opacity};"></img>`;
+    var second_tag = `<img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;opacity:${child_opacity};"></img>`;
+
+    if (informant_order === true) {
+        //console.log("child first");
+        first_tag = `<img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;opacity:${child_opacity};"></img>`;
+        second_tag = `<img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;opacity:${adult_opacity};"></img>`;
+    }
     return `
             <div id="triangle-container">
                 <div style="text-align:center; width: 35%;" >
@@ -388,10 +398,10 @@ const knowledge_screen_html_template = (
                 </div>
                 <div id="choose-container" >
                     <div style="text-align:center">
-                        <img src="${CHILD_IMAGE}" id="child-informant" class="${childClass}" style="max-width:60%;opacity:${child_opacity};">
+                        ${first_tag}
                     </div>
                     <div style="text-align:center">
-                        <img src="${ADULT_IMAGE}" id="adult-informant" class="${adultClass}" style="max-width:60%;opacity:${adult_opacity};">
+                        ${second_tag}
                     </div>    
                 </div>    
             </div>`;
@@ -428,12 +438,14 @@ function play_object_intro(audioSrc) {
  * @param {string} audioChild - audio file for the child follow-up
  * @param {string} audioAdult - audio file for the adult follow-up
  */
-function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChild, audioAdult) {
+function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChild, audioAdult, informant_order) {
     const seq = [];
 
+
+    console.log("informant order: " + informant_order);
     // 1. Question audio (no highlights)
     seq.push(createAudioTrial(
-        knowledge_screen_html_template(imgPath, false, false),
+        knowledge_screen_html_template(imgPath, informant_order, false, false),
         audioQuestion
     ));
 
@@ -450,23 +462,26 @@ function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChi
             "audio_path": audioAdult,
         }
     };
+
+
+
     //console.log(order)
     order.forEach((informant) => {
 
         // // 2. followup audio + highlight child icon
         seq.push(createAudioTrial(
-            knowledge_screen_html_template(imgPath, (informant === "child"), (informant === "adult")),
+            knowledge_screen_html_template(imgPath, informant_order, (informant === "child"), (informant === "adult")),
             order_info[informant]["audio_path"]
         ));
 
         // // 3. Keep highlight 1.5s
         seq.push(createPauseTrial(
-            knowledge_screen_html_template(imgPath, (informant === "child"), (informant === "adult")),
+            knowledge_screen_html_template(imgPath, informant_order, (informant === "child"), (informant === "adult")),
             1500
         ));
         // // 4. Remove highlight 0.5s
         seq.push(createPauseTrial(
-            knowledge_screen_html_template(imgPath, false, false),
+            knowledge_screen_html_template(imgPath, informant_order, false, false),
             500
         ));
     });
@@ -474,7 +489,7 @@ function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChi
 
 
     // 8. Choice trial
-    seq.push(createSelectionTrial(trial, seq_type, imgPath, order));
+    seq.push(createSelectionTrial(trial, seq_type, imgPath, order, informant_order));
 
     return seq;
 }
