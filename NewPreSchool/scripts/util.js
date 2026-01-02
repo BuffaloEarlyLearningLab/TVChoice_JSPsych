@@ -5,6 +5,9 @@
 const AUDIO_INTRO_PEOPLE = 'assets/Experimenter voice recordings/informant_intro/exp_2_people_jb.wav';
 const AUDIO_INTRO_KID = 'assets/Experimenter voice recordings/informant_intro/exp_kid_jb.wav';
 const AUDIO_INTRO_GROWNUP = 'assets/Experimenter voice recordings/informant_intro/exp_parents_jb.wav';
+const OBJECT_INTRO = 'assets/Experimenter voice recordings/familiarization_phase/exp_intro_toy_tool_jb.wav';
+const AUDIO_INTRO_TOOL = 'assets/Experimenter voice recordings/familiarization_phase/exp_tool_intro.wav';
+const AUDIO_INTRO_TOY = 'assets/Experimenter voice recordings/familiarization_phase/exp_toy_intro.wav';
 
 
 
@@ -24,6 +27,54 @@ function highlight(id, options = {}) {
         }, hold + duration + 100);
     }
 }
+function object_intro() {
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+    order_info = {
+        "toy": {
+            "audio_path": AUDIO_INTRO_TOY,
+            "element_id": "toy_choice",
+        },
+        "tool": {
+            "audio_path": AUDIO_INTRO_TOOL,
+            "element_id": "tool_choice",
+        }
+    }
+
+    if (Math.random() < 0.5) {
+        first = "toy";
+        last = "tool";
+    }
+    else {
+        last = "toy";
+        first = "tool";
+    }
+
+
+    var aud_info_object = new Audio(OBJECT_INTRO);
+    var audio1 = new Audio(order_info[first]["audio_path"]);
+    var audio2 = new Audio(order_info[last]["audio_path"]);
+    aud_info_object.play();
+
+    aud_info_object.onended = async function () {
+        await sleep(1500);
+        highlight(order_info[first]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
+        audio1.play();
+
+    };
+
+    audio1.onended = async function () {
+        await sleep(1500);
+        audio2.play();
+        highlight(order_info[last]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
+    };
+
+    audio2.onended = async function () {
+        const trialData = { "object_intro_audio_order": first + "_then_" + last }
+        jsPsych.finishTrial(trialData);
+    }
+}
+
 
 function Informant_intro_people() {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
@@ -72,6 +123,81 @@ function Informant_intro_people() {
         jsPsych.finishTrial(trialData);
     }
 }
+
+function comp_check_load_object(object_audio_path) {
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
+    const toyEl = document.getElementById('toy_choice');
+    const toolEl = document.getElementById('tool_choice');
+
+    // Initially disable clicks & style while audio plays
+    function disableChoices() {
+        [toyEl, toolEl].forEach(el => {
+            el.style.pointerEvents = 'none';
+            el.style.cursor = 'not-allowed';
+            el.style.opacity = 0.6;
+        });
+
+    }
+    function enableChoices() {
+        [toyEl, toolEl].forEach(el => {
+            el.style.pointerEvents = '';
+            el.style.cursor = 'pointer';
+            el.style.opacity = 1;
+        });
+    }
+
+
+
+    let finished = false;
+
+    async function chooseAndFinish(choiceId) {
+        if (finished) return;
+        finished = true;
+        // visual feedback
+        [toyEl, toolEl].forEach(el => el.style.outline = '');
+        const chosenEl = document.getElementById(choiceId);
+        if (chosenEl) {
+            chosenEl.style.boxShadow = '0 0 15px 5px gold';
+            chosenEl.style.borderRadius = '8px';
+        }
+
+        // cleanup listeners
+        cleanup();
+        await sleep(1000);
+
+        // trial data and finish
+        const trialData = { object_choice: choiceId, object_audio: object_audio_path };
+        //console.log(trialData)
+
+        jsPsych.finishTrial(trialData);
+    }
+
+    function toyClickHandler() { chooseAndFinish('toy_choice'); }
+    function toolClickHandler() { chooseAndFinish('tool_choice'); }
+
+    toyEl.addEventListener('click', toyClickHandler);
+    toolEl.addEventListener('click', toolClickHandler);
+
+    function cleanup() {
+        toyEl.removeEventListener('click', toyClickHandler);
+        toolEl.removeEventListener('click', toolClickHandler);
+    }
+
+    var aud_comprehension_check = new Audio(object_audio_path);
+
+    async function playAudio() {
+        aud_comprehension_check.play();
+        aud_comprehension_check.onended = async function () {
+            enableChoices();
+            await sleep(500); // max wait time for response
+        }
+
+    }
+
+    playAudio();
+
+}
+
 
 function comp_check_load(informant_audio_path) {
     const sleep = ms => new Promise(res => setTimeout(res, ms));
