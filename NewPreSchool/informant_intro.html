@@ -111,8 +111,8 @@
 
 
     const compCheckParams = {
-        "adult": 'assets/Experimenter voice recordings/informant_intro/exp_grown_up_compre_jb.wav',
-        "child": 'assets/Experimenter voice recordings/informant_intro/exp_kid_compre_2_jb.wav',
+        "adult": 'assets/Experimenter voice recordings/informant_intro/exp_adult_compre_jb.wav',
+        "child": 'assets/Experimenter voice recordings/informant_intro/exp_child_compre_jb.wav',
     };
     if (Math.random() < 0.5) {
         first = "adult";
@@ -122,7 +122,7 @@
         last = "adult";
         first = "child";
     }
-    console.log(first, last);
+    // console.log(first, last);
     timeline.push({
         type: jsPsychHtmlKeyboardResponse,
         stimulus: informat_html(left, right),

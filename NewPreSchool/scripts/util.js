@@ -3,8 +3,8 @@
 //#######################################################
 
 const AUDIO_INTRO_PEOPLE = 'assets/Experimenter voice recordings/informant_intro/exp_2_people_jb.wav';
-const AUDIO_INTRO_KID = 'assets/Experimenter voice recordings/informant_intro/exp_kid_jb.wav';
-const AUDIO_INTRO_GROWNUP = 'assets/Experimenter voice recordings/informant_intro/exp_parents_jb.wav';
+const AUDIO_INTRO_KID = 'assets/Experimenter voice recordings/informant_intro/exp_child_jb.wav';
+const AUDIO_INTRO_GROWNUP = 'assets/Experimenter voice recordings/informant_intro/exp_adult_jb.wav';
 const OBJECT_INTRO = 'assets/Experimenter voice recordings/familiarization_phase/exp_intro_toy_tool_jb.wav';
 const AUDIO_INTRO_TOOL = 'assets/Experimenter voice recordings/familiarization_phase/exp_tool_intro.wav';
 const AUDIO_INTRO_TOY = 'assets/Experimenter voice recordings/familiarization_phase/exp_toy_intro.wav';
@@ -58,7 +58,7 @@ function object_intro() {
 
     aud_info_object.onended = async function () {
         await sleep(1500);
-        highlight(order_info[first]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
+        highlight(order_info[first]["element_id"], { scale: 1.4, duration: 2000, hold: 7000 });
         audio1.play();
 
     };
@@ -66,7 +66,7 @@ function object_intro() {
     audio1.onended = async function () {
         await sleep(1500);
         audio2.play();
-        highlight(order_info[last]["element_id"], { scale: 1.4, duration: 2000, hold: 2000 });
+        highlight(order_info[last]["element_id"], { scale: 1.4, duration: 2000, hold: 7000 });
     };
 
     audio2.onended = async function () {
