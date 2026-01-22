@@ -8,34 +8,107 @@ const AUDIO_INTRO_GROWNUP = 'assets/Experimenter voice recordings/informant_intr
 const OBJECT_INTRO = 'assets/Experimenter voice recordings/familiarization_phase/exp_intro_toy_tool_jb.wav';
 const AUDIO_INTRO_TOOL = 'assets/Experimenter voice recordings/familiarization_phase/exp_tool_intro.wav';
 const AUDIO_INTRO_TOY = 'assets/Experimenter voice recordings/familiarization_phase/exp_toy_intro.wav';
+
+//informant intro footers//
 const FOOTER_INFORMANT_TEST = `
   <div id="parent-footer">
-    Parent: Please help your child click on their choice.
+    Parent: Please click on your child's choice.
   </div>
 `;
+const FOOTER_ADULT = `
+  <div id="parent-footer-adult" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the adult?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_CHILD = `
+  <div id="parent-footer-child" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px;  color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the child?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+//object intro footers//
 const FOOTER_OBJECT_TEST = `
   <div id="parent-footer">
-    Parent: Please help your child click on their choice.
+    Parent: Please click on your child's choice.
   </div>
 `;
-const FOOTER_EXPLANATION_TEST = `
+const FOOTER_TOY_PROMPT = `
+  <div id="parent-footer-toy" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the toy?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_TOOL_PROMPT = `
+  <div id="parent-footer-tool" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px;  color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the tool?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+
+
+//testing phase footers//
+const FOOTER_TESTING_TEST = `
   <div id="parent-footer">
-    Parent: Click the "Next" button when child is done responding.
+    Parent: Please click on your child's choice.
+  </div>
+`;
+
+//question footers//
+const FOOTER_EXPLANATION_TEST_1 = `
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think might use toys?
+    </div>
+    <div>
+      Parent: Click the "Next" button when child is done responding.
+    </div>
+  </div>
+`;
+const FOOTER_EXPLANATION_TEST_2 = `
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think might use tools?
+    </div>
+    <div>
+      Parent: Click the "Next" button when child is done responding.
+    </div>
   </div>
 `;
 const FOOTER_JUSTIFICATION_TEST = `
-  <div id="parent-footer">
-    Parent: Click the "Finish" button when child is done responding.
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you tell me why you chose these people to learn from?
+    </div>
+    <div>
+      Parent: Click the "Finish" button when child is done responding.
+    </div>
   </div>
 `;
-const FOOTER_TESTING_TEST = `
-  <div id="parent-footer">
-    Parent: Please help your child click on their choice.
-  </div>
-`;
+
+//learning phase footers//
+
 const FOOTER_LEARNING_TEST_1 = `
-  <div id="parent-footer">
-    Parent: Please help your child click on their choice.
+  <div id="footer-test">
+    Parent: Please click on your child's choice.
   </div>
 `;
 const FOOTER_LEARNING_TEST_2 = `
@@ -43,6 +116,30 @@ const FOOTER_LEARNING_TEST_2 = `
     Parent: Click the "Next" button when child is done responding.
   </div>
 `;
+const FOOTER_LEARNING_KNOWLEDGE = `
+  <div id="footer-test" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think knows what this thing is called?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_LEARNING_PREFERENCE = `
+  <div id="footer-test" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you want the learn the name of this object from?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+
+
+
 
 
 

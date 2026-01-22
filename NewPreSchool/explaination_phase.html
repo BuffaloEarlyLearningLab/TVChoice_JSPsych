@@ -48,7 +48,7 @@
 
     var explaination1 = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_EXPLANATION_TEST}`,
+        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_EXPLANATION_TEST_1}`,
         choices: ['Next'],
         on_load: () => {
 
@@ -74,7 +74,7 @@
 
     var explaination2 = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_EXPLANATION_TEST}`,
+        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_EXPLANATION_TEST_2}`,
         choices: ['Next'],
         on_load: () => {
 
@@ -98,8 +98,14 @@
     };
     timeline.push(explaination2);
 
-    console.log('built timeline:', timeline);
+    //console.log('built timeline:', timeline);
+    //jatos.onLoad(() => {
+        //jsPsych.run(timeline);
+    //});
+
     jatos.onLoad(() => {
+        console.log("Component 3 - studySessionData:", jatos.studySessionData);
+        console.log("informantPosition preserved:", jatos.studySessionData?.informantPosition);
         jsPsych.run(timeline);
     });
 
