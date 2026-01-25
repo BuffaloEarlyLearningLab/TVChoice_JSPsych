@@ -571,7 +571,7 @@ function play_object_intro(audioSrc) {
  * @param {string} audioChild - audio file for the child follow-up
  * @param {string} audioAdult - audio file for the adult follow-up
  */
-function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChild, audioAdult, informant_order) {
+function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChild, audioAdult, informant_order, followUpOrder) {
     const seq = [];
 
 
@@ -582,10 +582,8 @@ function build_common_sequence(trial, seq_type, imgPath, audioQuestion, audioChi
         audioQuestion
     ));
 
-    order = ["child", "adult"]
-    if (Math.random() < 0.5) {
-        order = ["adult", "child"]
-    }
+    // Use the passed balanced order
+    const order = followUpOrder;
 
     order_info = {
         "child": {

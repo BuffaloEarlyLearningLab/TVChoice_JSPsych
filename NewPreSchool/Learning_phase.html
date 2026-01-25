@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>My experiment</title>
     <script src="jatos.js"></script>
@@ -14,24 +15,26 @@
     <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
     <style>
-      #parent-footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        padding: 12px 20px;
-        background-color: transparent;
-        border-top: transparent;
-        text-align: center;
-        font-size: 16px;
-        color: #000000; 
-        z-index: 9999;
-      }
-      .jspsych-content {
-        padding-bottom: 100px;
-      }
+        #parent-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: transparent;
+            border-top: transparent;
+            text-align: center;
+            font-size: 16px;
+            color: #000000;
+            z-index: 9999;
+        }
+
+        .jspsych-content {
+            padding-bottom: 100px;
+        }
     </style>
 </head>
+
 <body>
 </body>
 <script>
@@ -45,12 +48,12 @@
     jatos.onLoad(() => {
         console.log("=== COMPONENT 2: LEARNING ===");
         console.log("studySessionData at onLoad:", jatos.studySessionData);
-        
+
         // Get informantPosition from studySessionData
         let informantPosition = jatos.studySessionData?.informantPosition;
-        
+
         console.log("Retrieved informantPosition:", informantPosition);
-        
+
         // Error handling
         if (!informantPosition) {
             console.error("informantPosition missing from studySessionData");
@@ -58,14 +61,14 @@
             document.body.innerHTML = "<h2>Error: Informant position not found. Please restart from the beginning.</h2>";
             return;
         }
-        
+
         console.log("Successfully retrieved informantPosition:", informantPosition);
-        
+
         // Set global informant_order: true if child is on left, false if adult is on left
         informant_order = informantPosition.startsWith("child");
-        
+
         console.log("informant_order set to:", informant_order, "(true = child on left, false = adult on left)");
-        
+
         // Add properties to jsPsych data
         jsPsych.data.addProperties({
             participant_id: jatos.studySessionData.id,
@@ -82,13 +85,35 @@
                 const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_learn_q_jb.wav";
                 const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_learn_child_jb.wav";
                 const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_learn_adult_jb.wav";
-                
+
                 const orderKey = "order_" + jatos.studySessionData.order_teach;
                 const trials = teaching_order_data[orderKey];
-                
-                trials.forEach((trial) => {
+
+                // Generate balanced orders for Knowledge and Learning phases
+                // Create an array with equal numbers of ['child', 'adult'] and ['adult', 'child']
+                let followup_orders = [];
+                for (let i = 0; i < trials.length; i++) {
+                    if (i % 2 === 0) {
+                        followup_orders.push(["child", "adult"]);
+                    } else {
+                        followup_orders.push(["adult", "child"]);
+                    }
+                }
+
+                // Shuffle the orders to randomize their occurrence
+                // utilizing jsPsych.randomization.shuffle if available, or simple shuffle
+                const knowledge_orders = jsPsych.randomization.shuffle(followup_orders);
+                const learning_orders = jsPsych.randomization.shuffle(followup_orders);
+
+                console.log("=== BALANCED RANDOMIZATION VERIFICATION ===");
+                console.log("Total Trials:", trials.length);
+                console.log("Balanced Knowledge Follow-up Orders:", knowledge_orders);
+                console.log("Balanced Learning Follow-up Orders:", learning_orders);
+                console.log("===========================================");
+
+                trials.forEach((trial, index) => {
                     const imgPath = `${trial.image_id}`;
-                    
+
                     // Stage 1: object introduction audio
                     var object_intro = {
                         type: jsPsychHtmlKeyboardResponse,
@@ -99,7 +124,7 @@
                         data: { trial_type: "stage_1", obj_name: trial.obj_name }
                     };
                     timeline.push(object_intro);
-                    
+
                     // Knowledge sequence
                     const knowledgeTrials = build_common_sequence(
                         trial,
@@ -108,7 +133,8 @@
                         AUDIO_KNOWLEDGE_QUESTION,
                         AUDIO_KNOWLEDGE_CHILD,
                         AUDIO_KNOWLEDGE_ADULT,
-                        informant_order
+                        informant_order,
+                        knowledge_orders[index] // Pass balanced order
                     );
                     //knowledgeTrials.forEach(t => t.stimulus += FOOTER_LEARNING_KNOWLEDGE);
                     // Only add footer to the LAST trial (the choice trial)
@@ -116,7 +142,7 @@
                         knowledgeTrials[knowledgeTrials.length - 1].stimulus += FOOTER_LEARNING_KNOWLEDGE;
                     }
                     timeline.push(...knowledgeTrials);
-                    
+
                     // Learning sequence
                     const learningTrials = build_common_sequence(
                         trial,
@@ -125,7 +151,8 @@
                         AUDIO_LEARNING_QUESTION,
                         AUDIO_LEARNING_CHILD,
                         AUDIO_LEARNING_ADULT,
-                        informant_order
+                        informant_order,
+                        learning_orders[index] // Pass balanced order
                     );
                     //learningTrials.forEach(t => t.stimulus += FOOTER_LEARNING_PREFERENCE);
                     // Only add footer to the LAST trial (the choice trial)
@@ -133,7 +160,7 @@
                         learningTrials[learningTrials.length - 1].stimulus += FOOTER_LEARNING_PREFERENCE;
                     }
                     timeline.push(...learningTrials);
-                    
+
                     // Teaching trial
                     timeline.push({
                         type: jsPsychHtmlButtonResponse,
@@ -182,7 +209,7 @@
                         },
                     });
                 });
-                
+
                 jsPsych.run(timeline);
             })
             .catch((e) => {
@@ -191,4 +218,5 @@
             });
     });
 </script>
+
 </html>
