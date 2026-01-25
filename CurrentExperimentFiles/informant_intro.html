@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Informant Intro Experiment</title>
+
+  <!-- Load JATOS -->
+  <script src="jatos.js"></script>
+
+  <!-- jsPsych Core + Plugins -->
+  <script src="jspsych/dist/jspsych.js"></script>
+  <script src="jspsych/dist/plugin-html-button-response.js"></script>
+  <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+  <script src="jspsych/dist/plugin-preload.js"></script>
+
+  <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    /* Container holding both informants */
+    #informant-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 80px;
+      margin-top: 40px;
+    }
+
+    .informant-img {
+      max-width: 260px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
+      border: 6px solid transparent;
+      border-radius: 10px;
+      cursor: default;
+    }
+
+    .informant-img:hover {
+      cursor: pointer;
+    }
+
+    .highlight-glow {
+      transform: scale(1.4);
+      box-shadow: 0 0 25px 10px gold;
+    }
+
+    .selected {
+      border: 6px solid gold !important;
+    }
+
+    .disabled {
+      pointer-events: none;
+      opacity: 0.6;
+      cursor: default !important;
+    }
+  </style>
+</head>
+
+<body></body>
+
+<script>
+  /**************************************************************
+   * File paths
+   **************************************************************/
+  const AUDIO_1 = "audio/JB_Recordings/Informant Intro_norm/exp_2_people_jb.wav";
+  const AUDIO_2 = "audio/JB_Recordings/Informant Intro_norm/exp_kid_jb.wav";
+  const AUDIO_3 = "audio/JB_Recordings/Informant Intro_norm/exp_parents_jb.wav";
+  const AUDIO_4 = "audio/JB_Recordings/Informant Intro_norm/exp_kid_compre_2_jb.wav";       // comprehension A
+  const AUDIO_5 = "audio/JB_Recordings/Informant Intro_norm/exp_grown_up_compre_jb.wav";    // comprehension B
+
+  const CHILD_IMG = "img/child_informant.png";
+  const ADULT_IMG = "img/adult_informant.png";
+
+  /**************************************************************
+   * Init with override_safe_mode true
+   **************************************************************/
+  const jsPsych = initJsPsych({
+    override_safe_mode: true
+  });
+
+  let timeline = [];
+
+  /**************************************************************
+   * Layout HTML (child left, adult right)
+   **************************************************************/
+  function informantHTML() {
+    return `
+      <div id="informant-row">
+        <img id="child" class="informant-img" src="${CHILD_IMG}">
+        <img id="adult" class="informant-img" src="${ADULT_IMG}">
+      </div>
+    `;
+  }
+
+  /**************************************************************
+   * Helper: play audio then end trial automatically
+   **************************************************************/
+  function audioTrial(stimulusHTML, audioFile) {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      choices: "NO_KEYS",
+      stimulus: stimulusHTML,
+      on_load: () => {
+        let audio = new Audio(audioFile);
+        audio.play();
+        audio.onended = () => jsPsych.finishTrial();
+      }
+    };
+  }
+
+  /**************************************************************
+   * Helper: pause for ms
+   **************************************************************/
+  function waitTrial(html, ms) {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      choices: "NO_KEYS",
+      trial_duration: ms,
+      stimulus: html
+    };
+  }
+
+  /**************************************************************
+   * Start screen
+   **************************************************************/
+  timeline.push({
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<p><strong>Start the experiment</strong></p>`,
+    choices: ["Start"]
+  });
+
+  /**************************************************************
+   * AUDIO 1
+   **************************************************************/
+  timeline.push(
+    audioTrial(informantHTML(), AUDIO_1)
+  );
+
+  timeline.push(waitTrial(informantHTML(), 500));
+
+  /**************************************************************
+   * AUDIO 2 + highlight child
+   **************************************************************/
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    choices: "NO_KEYS",
+    stimulus: informantHTML(),
+    on_load: () => {
+      let audio = new Audio(AUDIO_2);
+      audio.play();
+
+      const child = document.getElementById("child");
+      child.classList.add("highlight-glow");
+
+      audio.onended = () => jsPsych.finishTrial();
+    }
+  });
+
+  timeline.push(
+    waitTrial(
+      informantHTML().replace('id="child"', 'id="child" class="informant-img highlight-glow"'),
+      1000
+    )
+  );
+
+  timeline.push(waitTrial(informantHTML(), 300));
+
+  timeline.push(waitTrial(informantHTML(), 500));
+
+  /**************************************************************
+   * AUDIO 3 + highlight adult
+   **************************************************************/
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    choices: "NO_KEYS",
+    stimulus: informantHTML(),
+    on_load: () => {
+      let audio = new Audio(AUDIO_3);
+      audio.play();
+
+      const adult = document.getElementById("adult");
+      adult.classList.add("highlight-glow");
+
+      audio.onended = () => jsPsych.finishTrial();
+    }
+  });
+
+  timeline.push(
+    waitTrial(
+      informantHTML().replace('id="adult"', 'id="adult" class="informant-img highlight-glow"'),
+      1000
+    )
+  );
+
+  timeline.push(waitTrial(informantHTML(), 300));
+
+  timeline.push(waitTrial(informantHTML(), 500));
+
+  /**************************************************************
+   * COMPREHENSION PART A (Audio 4)
+   * → participant clicks child/adult only AFTER audio finishes
+   **************************************************************/
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    choices: "NO_KEYS",
+    stimulus: informantHTML(),
+    on_load: () => {
+      let audio = new Audio(AUDIO_4);
+      audio.play();
+
+      const child = document.getElementById("child");
+      const adult = document.getElementById("adult");
+
+      // Disable clicks until audio ends
+      child.classList.add("disabled");
+      adult.classList.add("disabled");
+
+      function enableClicks() {
+        child.classList.remove("disabled");
+        adult.classList.remove("disabled");
+        child.style.cursor = "pointer";
+        adult.style.cursor = "pointer";
+
+        // Remove any existing selected class to reset
+        child.classList.remove("selected");
+        adult.classList.remove("selected");
+
+        function finish(choice) {
+          jsPsych.finishTrial({
+            comprehension_audio: AUDIO_4,
+            choice: choice
+          });
+        }
+
+        child.onclick = () => {
+          child.classList.add("selected");
+          adult.classList.remove("selected");
+          setTimeout(() => finish("child"), 500);
+        };
+
+        adult.onclick = () => {
+          adult.classList.add("selected");
+          child.classList.remove("selected");
+          setTimeout(() => finish("adult"), 500);
+        };
+      }
+
+      audio.onended = enableClicks;
+    }
+  });
+
+  timeline.push(waitTrial(informantHTML(), 500));
+
+  /**************************************************************
+   * COMPREHENSION PART B (Audio 5)
+   * → participant clicks again only AFTER audio finishes
+   **************************************************************/
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    choices: "NO_KEYS",
+    stimulus: informantHTML(),
+    on_load: () => {
+      let audio = new Audio(AUDIO_5);
+      audio.play();
+
+      const child = document.getElementById("child");
+      const adult = document.getElementById("adult");
+
+      // Disable clicks until audio ends
+      child.classList.add("disabled");
+      adult.classList.add("disabled");
+
+      function enableClicks() {
+        child.classList.remove("disabled");
+        adult.classList.remove("disabled");
+        child.style.cursor = "pointer";
+        adult.style.cursor = "pointer";
+
+        // Remove any existing selected class to reset
+        child.classList.remove("selected");
+        adult.classList.remove("selected");
+
+        function finish(choice) {
+          jsPsych.finishTrial({
+            comprehension_audio: AUDIO_5,
+            choice: choice
+          });
+        }
+
+        child.onclick = () => {
+          child.classList.add("selected");
+          adult.classList.remove("selected");
+          setTimeout(() => finish("child"), 500);
+        };
+
+        adult.onclick = () => {
+          adult.classList.add("selected");
+          child.classList.remove("selected");
+          setTimeout(() => finish("adult"), 500);
+        };
+      }
+
+      audio.onended = enableClicks;
+    }
+  });
+
+  // Run the timeline and submit data when finished
+  jsPsych.run(timeline).then(() => {
+    const allData = jsPsych.data.get().json();
+    jatos.submitResultData(allData, jatos.endStudy);
+  });
+</script>
+
+</html>

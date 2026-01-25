@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>My experiment</title>
     <script src="jatos.js"></script>
@@ -13,49 +12,60 @@
     <script src="scripts/util.js"></script>
     <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+    <style>
+      #parent-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 20px;
+        background-color: transparent;
+        border-top: transparent;
+        text-align: center;
+        font-size: 16px;
+        color: #000000; 
+        z-index: 9999;
+      }
+      .jspsych-content {
+        padding-bottom: 20px;
+      }
+      .footer-prompt {
+        bottom: 48px;
+        background-color: transparent;
+        border-top: 1px solid #ffffff;
+      }
+      .footer-base {
+        bottom: 0;
+        background-color: transparent;
+        border-top: none;
+      }
+    </style>
 </head>
-
 <body>
 </body>
 <script>
 
-    // http://localhost:9000/publix/fsNGQhLj5FJ?order_teach=2&id=12&order_test=1
-
+    // Initialize global variables for left/right, to be assigned in jatos.onLoad
+    var left, right;
     var jsPsych = initJsPsych({
-        //on_trial_start: jatos.addAbortButton,
-        on_trial_start: function () {
-            session_data = {
-                "id": jatos.urlQueryParameters.id,
-                "order_teach": jatos.urlQueryParameters.order_teach,
-                "order_test": jatos.urlQueryParameters.order_test
-            };
-            jatos.setStudySessionData(session_data);
-            jsPsych.data.addProperties({ "participant_id": jatos.studySessionData["id"] });
-            //console.log("Study session data set to:", jatos.studySessionData);
-        },
-        on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
+        on_trial_start: () => {},
+        on_finish: () => {
+            console.log("Component 1 finishing. Final studySessionData:", jatos.studySessionData);
+            jatos.submitResultData(jsPsych.data.get().json(), () => {
+                console.log("Result data submitted, starting next component");
+                jatos.startNextComponent();
+            });
+        }
     });
-
-    //console.log("ID retrieved from URL parameters: ", jatos.studySessionData["id"]);
-    //var jsPsych = initJsPsych();
-    // var should_start_experiment = true;
-    // if (1 <= jatos.studySessionData["order_teach"] <= 2) {
-    //     should_start_experiment = false;
-    //     jatos.abortStudy("participant aborted by pressing abort button");
-    // }
-
-
-    timeline = []
-
+    timeline = [];
+    
     // Screen 1: Welcome block
-
     var welcome_block = {
         type: jsPsychHtmlButtonResponse,
         stimulus: '<p>Start the experiment</p>',
         choices: ['Next'],
         record_data: false,
         on_load: function () {
-
             if (parseInt(jatos.studySessionData["order_teach"]) > 2) {
                 jatos.endStudy(false, "Enter correct Teaching order value to proceed");
             }
@@ -65,88 +75,121 @@
         },
     };
     timeline.push(welcome_block);
-
-    // screen 2: Informant
-
-    if (Math.random() < 0.5) {
-        left = "adult";
-        right = "child";
-    }
-    else {
-        right = "adult";
-        left = "child";
-    }
-
-    const informat_html = (left, right) => `<div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
-      <div style="text-align:center">
-        <img id="${left}_choice" src="assets/img/${left}_informant.png"  style="max-width:60%;cursor:not-allowed;opacity:1" />
-      </div>
-      <div style="text-align:center">
-        <img id="${right}_choice" src="assets/img/${right}_informant.png" style="max-width:60%;cursor:not-allowed;opacity:1" />
-      </div>
-    </div>`;
-
-    var informat_main = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: informat_html(left, right),
-        choices: "NO_KEYS",
-        on_load: function () {
-            Informant_intro_people(left, right)
-        },
-        data: { "informant_intro_display_order": "left_" + left + "_right_" + right },
-    };
-    timeline.push(informat_main);
-
-    var informat_end = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: informat_html(left, right),
-        choices: ['Next'],
-        response_ends_trial: true,
-        record_data: false,
-
-    };
-    timeline.push(informat_end);
-
-    // Screen 3: Comprehension check
-
-
-    const compCheckParams = {
-        "adult": 'assets/Experimenter voice recordings/informant_intro/exp_adult_compre_jb.wav',
-        "child": 'assets/Experimenter voice recordings/informant_intro/exp_child_compre_jb.wav',
-    };
-    if (Math.random() < 0.5) {
-        first = "adult";
-        last = "child";
-    }
-    else {
-        last = "adult";
-        first = "child";
-    }
-    // console.log(first, last);
-    timeline.push({
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: informat_html(left, right),
-        choices: "NO_KEYS",
-        on_load: function () { comp_check_load(compCheckParams[first]); },
-        data: { "comp_check_order": first + "_then_" + last }
-
-    });
-
-    timeline.push({
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: informat_html(left, right),
-        choices: "NO_KEYS",
-        on_load: function () { comp_check_load(compCheckParams[last]); },
-        data: { "comp_check_order": first + "_then_" + last }
-
-    });
-
-    //console.log('built timeline:', timeline);
+    
     jatos.onLoad(() => {
-        jsPsych.run(timeline);
+        console.log("=== COMPONENT 1: INFORMANT INTRO ===");
+        console.log("Initial studySessionData:", jatos.studySessionData);
+        
+        // Get existing session data or create new object
+        let session_data = jatos.studySessionData || {};
+        
+        // Set URL parameters
+        session_data.id = jatos.urlQueryParameters.id || session_data.id;
+        session_data.order_teach = jatos.urlQueryParameters.order_teach || session_data.order_teach;
+        session_data.order_test = jatos.urlQueryParameters.order_test || session_data.order_test;
+        
+        console.log("Checking informantPosition:", session_data.informantPosition);
+        
+        // If informant position not stored yet, randomize it
+        if (!session_data.informantPosition) {
+            if (Math.random() < 0.5) {
+                left = "adult";
+                right = "child";
+            } else {
+                left = "child";
+                right = "adult";
+            }
+            session_data.informantPosition = `${left}-${right}`;
+            console.log("Created NEW informantPosition:", session_data.informantPosition);
+        } else {
+            [left, right] = session_data.informantPosition.split("-");
+            console.log("Using EXISTING informantPosition:", session_data.informantPosition);
+        }
+        
+        console.log("Session data to save:", session_data);
+        console.log("left:", left, "right:", right);
+        
+        // Save to studySessionData
+        jatos.setStudySessionData(session_data)
+            .then(() => {
+                console.log("SESSION DATA SAVED");
+                console.log("Verified studySessionData:", jatos.studySessionData);
+                
+                // Add participant id to jsPsych data properties
+                jsPsych.data.addProperties({ participant_id: session_data.id });
+                
+                // Define informat_html function
+                const informat_html = (left, right, show_footer = false, footer_html = "") => `
+                  <div class="jspsych-content">
+                    <div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
+                      <div style="text-align:center">
+                        <img id="${left}_choice" src="assets/img/${left}_informant.png"
+                             style="max-width:60%;cursor:not-allowed;opacity:1" />
+                      </div>
+                      <div style="text-align:center">
+                        <img id="${right}_choice" src="assets/img/${right}_informant.png"
+                             style="max-width:60%;cursor:not-allowed;opacity:1" />
+                      </div>
+                    </div>
+                    ${show_footer ? footer_html : ""}
+                  </div>
+                `;
+                
+                // Screen 2: Informant
+
+                var informat_main = {
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: informat_html(left, right),
+                    choices: "NO_KEYS",
+                    on_load: function () {
+                        Informant_intro_people(left, right)
+                    },
+                    data: { "informant_intro_display_order": "left_" + left + "_right_" + right },
+                };
+                timeline.push(informat_main);
+                
+                // Screen 3: Comprehension check
+
+                const compCheckParams = {
+                    "adult": 'assets/Experimenter voice recordings/informant_intro/exp_adult_compre_jb.wav',
+                    "child": 'assets/Experimenter voice recordings/informant_intro/exp_child_compre_jb.wav',
+                };
+                
+                let first, last;
+                if (Math.random() < 0.5) {
+                    first = "adult";
+                    last = "child";
+                } else {
+                    last = "adult";
+                    first = "child";
+                }
+                
+                console.log("Comprehension check order:", first, "then", last);
+
+                timeline.push({
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: informat_html(left, right, true, first == "adult" ? FOOTER_ADULT : FOOTER_CHILD),
+                    choices: "[]",
+                    on_load: function () { comp_check_load(compCheckParams[first]); },
+                    data: { "comp_check_order": first + "_check" }
+                });
+                
+                timeline.push({
+                    type: jsPsychHtmlKeyboardResponse,
+                    stimulus: informat_html(left, right, true, last === "adult" ? FOOTER_ADULT : FOOTER_CHILD),
+                    choices: "[]",
+                    footer_html: FOOTER_INFORMANT_TEST,
+                    on_load: function () { comp_check_load(compCheckParams[last]); },
+                    data: { "comp_check_order": last + "_check" }
+                });
+                
+                // Start the experiment
+                jsPsych.run(timeline);
+            })
+            .catch(err => {
+                console.error("Failed to save session data:", err);
+                document.body.innerHTML = "<h2>Error: Failed to save session data. Please contact the researcher.</h2>";
+            });
     });
-    //jsPsych.run(timeline);
-
 </script>
-
 </html>

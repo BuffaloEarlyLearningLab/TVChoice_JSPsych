@@ -9,6 +9,139 @@ const OBJECT_INTRO = 'assets/Experimenter voice recordings/familiarization_phase
 const AUDIO_INTRO_TOOL = 'assets/Experimenter voice recordings/familiarization_phase/exp_tool_intro.wav';
 const AUDIO_INTRO_TOY = 'assets/Experimenter voice recordings/familiarization_phase/exp_toy_intro.wav';
 
+//informant intro footers//
+const FOOTER_INFORMANT_TEST = `
+  <div id="parent-footer">
+    Parent: Please click on your child's choice.
+  </div>
+`;
+const FOOTER_ADULT = `
+  <div id="parent-footer-adult" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the adult?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_CHILD = `
+  <div id="parent-footer-child" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px;  color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the child?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+//object intro footers//
+const FOOTER_OBJECT_TEST = `
+  <div id="parent-footer">
+    Parent: Please click on your child's choice.
+  </div>
+`;
+const FOOTER_TOY_PROMPT = `
+  <div id="parent-footer-toy" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the toy?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_TOOL_PROMPT = `
+  <div id="parent-footer-tool" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px;  color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you show me which one is the tool?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+
+
+//testing phase footers//
+const FOOTER_TESTING_TEST = `
+  <div id="parent-footer">
+    Parent: Please click on your child's choice.
+  </div>
+`;
+
+//question footers//
+const FOOTER_EXPLANATION_TEST_1 = `
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think might use toys?
+    </div>
+    <div>
+      Parent: Click the "Next" button when child is done responding.
+    </div>
+  </div>
+`;
+const FOOTER_EXPLANATION_TEST_2 = `
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think might use tools?
+    </div>
+    <div>
+      Parent: Click the "Next" button when child is done responding.
+    </div>
+  </div>
+`;
+const FOOTER_JUSTIFICATION_TEST = `
+  <div id="parent-footer-explanation-1" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Can you tell me why you chose these people to learn from?
+    </div>
+    <div>
+      Parent: Click the "Finish" button when child is done responding.
+    </div>
+  </div>
+`;
+
+//learning phase footers//
+
+const FOOTER_LEARNING_TEST_1 = `
+  <div id="footer-test">
+    Parent: Please click on your child's choice.
+  </div>
+`;
+const FOOTER_LEARNING_TEST_2 = `
+  <div id="parent-footer">
+    Parent: Click the "Next" button when child is done responding.
+  </div>
+`;
+const FOOTER_LEARNING_KNOWLEDGE = `
+  <div id="footer-test" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you think knows what this thing is called?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+const FOOTER_LEARNING_PREFERENCE = `
+  <div id="footer-test" style="position: fixed; bottom: 0; left: 0; width: 100%; background: transparent; padding: 12px 20px; color: black; font-size: 16px; z-index: 9999;">
+    <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+      Prompt: Who do you want the learn the name of this object from?
+    </div>
+    <div>
+      Parent: Please click on your child's choice.
+    </div>
+  </div>
+`;
+
+
+
+
+
+
 
 
 function highlight(id, options = {}) {
@@ -189,7 +322,7 @@ function comp_check_load_object(object_audio_path) {
         aud_comprehension_check.play();
         aud_comprehension_check.onended = async function () {
             enableChoices();
-            await sleep(500); // max wait time for response
+            await sleep(1000); // max wait time for response
         }
 
     }
@@ -518,14 +651,14 @@ function createTestTrial(trial) {
     const stimHtml = (clickable = false) => `
         <div id="triangle-container">
             <div style="text-align:center">
-                <img id="center-choice" src="assets/img/${trial.center_image}.jpg" style="max-width:320px; width:100%; height:auto;" ${clickable ? '' : 'style="pointer-events:none;opacity:0.9;"'}>
+                <img id="center-choice" src="assets/img/${trial.center_image}.jpg" style="max-width:260px; width:90%; height:auto;" ${clickable ? '' : 'pointer-events:none;opacity:0.9;"'}>
             </div>
-            <div id="choose-container" style="display:grid;grid-template-columns:1fr 1fr;gap:200px;margin-top:100px;">
+            <div id="choose-container" style="display:grid;grid-template-columns:1fr 1fr;gap:200px;margin-top:20px;">
                 <div style="text-align:center">
-                    <img id="left-choice" src="assets/img/${trial.left_image}.jpg" style="max-width:260px; width:100%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
+                    <img id="left-choice" src="assets/img/${trial.left_image}.jpg" style="max-width:260px; width:90%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
                 </div>
                 <div style="text-align:center">
-                    <img id="right-choice" src="assets/img/${trial.right_image}.jpg" style="max-width:260px; width:100%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
+                    <img id="right-choice" src="assets/img/${trial.right_image}.jpg" style="max-width:260px; width:90%; height:auto; ${clickable ? '' : 'pointer-events:none;opacity:0.9;'}">
                 </div>
             </div>
         </div>`;

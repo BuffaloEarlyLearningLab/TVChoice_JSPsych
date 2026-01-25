@@ -12,26 +12,26 @@
       "repeat_sound_file_adult": "adult_name_obj_toma.wav"
     },
     {
-      "obj_name": "Coodle",
-      "image_id": "2039c.jpg",
-      "trial_number": 2,
-      "type": "toy",
-      "type_soundfile": "exp_look_toy_jb.wav",
-      "sound_file_child": "child_teach_coodle_toy.wav",
-      "sound_file_adult": "adult_teach_coodle_toy.wav",
-      "repeat_sound_file_child": "child_name_obj_coodle.wav",
-      "repeat_sound_file_adult": "adult_name_obj_coodle.wav"
-    },
-    {
       "obj_name": "Bosa",
       "image_id": "2033-600.jpg",
       "trial_number": 3,
-      "type": "tool",
-      "type_soundfile": "exp_look_tool_jb.wav",
-      "sound_file_child": "child_teach_bosa_tool.wav",
-      "sound_file_adult": "adult_teach_bosa_tool.wav",
+      "type": "toy",
+      "type_soundfile": "exp_look_toy_jb.wav",
+      "sound_file_child": "child_teach_bosa_toy.wav",
+      "sound_file_adult": "adult_teach_bosa_toy.wav",
       "repeat_sound_file_child": "child_repeat_word_bosa.wav",
       "repeat_sound_file_adult": "adult_repeat_word_bosa.wav"
+    },
+    {
+      "obj_name": "Coodle",
+      "image_id": "2039c.jpg",
+      "trial_number": 2,
+      "type": "tool",
+      "type_soundfile": "exp_look_tool_jb.wav",
+      "sound_file_child": "child_teach_coodle_tool.wav",
+      "sound_file_adult": "adult_teach_coodle_tool.wav",
+      "repeat_sound_file_child": "child_name_obj_coodle.wav",
+      "repeat_sound_file_adult": "adult_name_obj_coodle.wav"
     },
     {
       "obj_name": "Blicket",
@@ -103,26 +103,26 @@
       "repeat_sound_file_adult": "adult_repeat_word_blicket.wav"
     },
     {
-      "obj_name": "Bosa",
-      "image_id": "2033-600.jpg",
-      "trial_number": 4,
-      "type": "toy",
-      "type_soundfile": "exp_look_toy_jb.wav",
-      "sound_file_child": "child_teach_bosa_toy.wav",
-      "sound_file_adult": "adult_teach_bosa_toy.wav",
-      "repeat_sound_file_child": "child_name_obj_bosa.wav",
-      "repeat_sound_file_adult": "adult_name_obj_bosa.wav"
-    },
-    {
       "obj_name": "Coodle",
       "image_id": "2039c.jpg",
       "trial_number": 5,
-      "type": "tool",
-      "type_soundfile": "exp_look_tool_jb.wav",
-      "sound_file_child": "child_teach_coodle_tool.wav",
-      "sound_file_adult": "adult_teach_coodle_tool.wav",
+      "type": "toy",
+      "type_soundfile": "exp_look_toy_jb.wav",
+      "sound_file_child": "child_teach_coodle_toy.wav",
+      "sound_file_adult": "adult_teach_coodle_toy.wav",
       "repeat_sound_file_child": "child_repeat_word_coodle.wav",
       "repeat_sound_file_adult": "adult_repeat_word_coodle.wav"
+    },
+    {
+      "obj_name": "Bosa",
+      "image_id": "2033-600.jpg",
+      "trial_number": 4,
+      "type": "tool",
+      "type_soundfile": "exp_look_tool_jb.wav",
+      "sound_file_child": "child_teach_bosa_tool.wav",
+      "sound_file_adult": "adult_teach_bosa_tool.wav",
+      "repeat_sound_file_child": "child_name_obj_bosa.wav",
+      "repeat_sound_file_adult": "adult_name_obj_bosa.wav"
     },
     {
       "obj_name": "Toma",

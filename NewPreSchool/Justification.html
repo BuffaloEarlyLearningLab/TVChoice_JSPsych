@@ -13,6 +13,24 @@
     <script src="scripts/util.js"></script>
     <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+    <style>
+      #parent-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 20px;
+        background-color: #ffffff;
+        border-top: 1px solid #ffffff;
+        text-align: center;
+        font-size: 16px;
+        color: #000000; 
+        z-index: 9999;
+      }
+      .jspsych-content {
+        padding-bottom: 20px;
+      }
+    </style>
 </head>
 
 <body>
@@ -30,16 +48,20 @@
 
     var Justification_screen1 = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: '<p>Exploratory Justification Question</p>',
+        stimulus: '<p> Please help us answer the next question!</p>',
         choices: ['Next']
     };
     timeline.push(Justification_screen1);
 
     var Justification_screen2 = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: '<p style="font-size:100px;">?</p>',
+        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_JUSTIFICATION_TEST}`,
         choices: ['Finish'],
         on_load: () => {
+
+            const btn = document.querySelector("button");
+            btn.disabled = true;
+
             const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
             const playPromise = audio.play();
             if (playPromise !== undefined) {
@@ -47,6 +69,12 @@
                     // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
                 });
             }
+
+            audio.onended = () => {
+                setTimeout(() => {
+                    btn.disabled = false;
+                }, 5000);
+            };
         },
     };
     timeline.push(Justification_screen2);
