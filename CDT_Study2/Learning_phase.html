@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jatos.js"></script>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="jspsych/dist/plugin-call-function.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+    <style>
+        #parent-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: transparent;
+            border-top: transparent;
+            text-align: center;
+            font-size: 16px;
+            color: #000000;
+            z-index: 9999;
+        }
+
+        .jspsych-content {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+
+<body>
+</body>
+<script>
+
+    var informant_order = null;
+    var jsPsych = initJsPsych({
+        on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
+    });
+    timeline = [];
+
+    jatos.onLoad(() => {
+        console.log("=== COMPONENT 2: LEARNING ===");
+        console.log("studySessionData at onLoad:", jatos.studySessionData);
+
+        // Get informantPosition from studySessionData
+        let informantPosition = jatos.studySessionData?.informantPosition;
+
+        console.log("Retrieved informantPosition:", informantPosition);
+
+        // Error handling
+        if (!informantPosition) {
+            console.error("informantPosition missing from studySessionData");
+            console.log("Available studySessionData:", jatos.studySessionData);
+            document.body.innerHTML = "<h2>Error: Informant position not found. Please restart from the beginning.</h2>";
+            return;
+        }
+
+        console.log("Successfully retrieved informantPosition:", informantPosition);
+
+        // Set global informant_order: true if child is on left, false if adult is on left
+        informant_order = informantPosition.startsWith("child");
+
+        console.log("informant_order set to:", informant_order, "(true = child on left, false = adult on left)");
+
+        // Add properties to jsPsych data
+        jsPsych.data.addProperties({
+            participant_id: jatos.studySessionData.id,
+            teach_order: "order_" + jatos.studySessionData.order_teach,
+            informantPosition: informantPosition
+        });
+
+        fetch("assets/teaching_order.json")
+            .then((r) => r.json())
+            .then((teaching_order_data) => {
+                const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_know_q_jb.wav";
+                const AUDIO_KNOWLEDGE_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_know_child_jb.wav";
+                const AUDIO_KNOWLEDGE_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_know_adult_jb.wav";
+                const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_learn_q_jb.wav";
+                const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_learn_child_jb.wav";
+                const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_learn_adult_jb.wav";
+
+                const orderKey = "order_" + jatos.studySessionData.order_teach;
+                const trials = teaching_order_data[orderKey];
+
+                // Generate balanced orders for Knowledge and Learning phases
+                // Create an array with equal numbers of ['child', 'adult'] and ['adult', 'child']
+                let followup_orders = [];
+                for (let i = 0; i < trials.length; i++) {
+                    if (i % 2 === 0) {
+                        followup_orders.push(["child", "adult"]);
+                    } else {
+                        followup_orders.push(["adult", "child"]);
+                    }
+                }
+
+                // Shuffle the orders to randomize their occurrence
+                // utilizing jsPsych.randomization.shuffle if available, or simple shuffle
+                const knowledge_orders = jsPsych.randomization.shuffle(followup_orders);
+                const learning_orders = jsPsych.randomization.shuffle(followup_orders);
+
+                console.log("=== BALANCED RANDOMIZATION VERIFICATION ===");
+                console.log("Total Trials:", trials.length);
+                console.log("Balanced Knowledge Follow-up Orders:", knowledge_orders);
+                console.log("Balanced Learning Follow-up Orders:", learning_orders);
+                console.log("===========================================");
+
+                trials.forEach((trial, index) => {
+                    const imgPath = `${trial.image_id}`;
+
+                    // Stage 1: object introduction audio
+                    var object_intro = {
+                        type: jsPsychHtmlKeyboardResponse,
+                        stimulus: knowledge_screen_html_template(imgPath, informant_order, false, false, 0, 0),
+                        choices: "NO_KEYS",
+                        on_load: function () { play_object_intro(trial.type_soundfile); },
+                        record_data: false,
+                        data: { trial_type: "stage_1", obj_name: trial.obj_name }
+                    };
+                    timeline.push(object_intro);
+
+                    // Knowledge sequence
+                    const knowledgeTrials = build_common_sequence(
+                        trial,
+                        'knowledge',
+                        imgPath,
+                        AUDIO_KNOWLEDGE_QUESTION,
+                        AUDIO_KNOWLEDGE_CHILD,
+                        AUDIO_KNOWLEDGE_ADULT,
+                        informant_order,
+                        knowledge_orders[index] // Pass balanced order
+                    );
+                    //knowledgeTrials.forEach(t => t.stimulus += FOOTER_LEARNING_KNOWLEDGE);
+                    // Only add footer to the LAST trial (the choice trial)
+                    if (knowledgeTrials.length > 0) {
+                        knowledgeTrials[knowledgeTrials.length - 1].stimulus += FOOTER_LEARNING_KNOWLEDGE;
+                    }
+                    timeline.push(...knowledgeTrials);
+
+                    // Learning sequence
+                    const learningTrials = build_common_sequence(
+                        trial,
+                        'learning',
+                        imgPath,
+                        AUDIO_LEARNING_QUESTION,
+                        AUDIO_LEARNING_CHILD,
+                        AUDIO_LEARNING_ADULT,
+                        informant_order,
+                        learning_orders[index] // Pass balanced order
+                    );
+                    //learningTrials.forEach(t => t.stimulus += FOOTER_LEARNING_PREFERENCE);
+                    // Only add footer to the LAST trial (the choice trial)
+                    if (learningTrials.length > 0) {
+                        learningTrials[learningTrials.length - 1].stimulus += FOOTER_LEARNING_PREFERENCE;
+                    }
+                    timeline.push(...learningTrials);
+
+                    // Teaching trial
+                    timeline.push({
+                        type: jsPsychHtmlButtonResponse,
+                        stimulus: teaching_image_html_template(imgPath) + FOOTER_LEARNING_TEST_2,
+                        choices: ['Next'],
+                        on_load: () => {
+                            const lastChoice = jsPsych.data.get().last(1).values()[0].selection;
+                            const selectedInformant = lastChoice === "child" ? "child" : "adult";
+                            const btn = document.querySelector("button");
+                            btn.disabled = true;
+                            const toprightHolder = document.getElementById("topright_holder");
+                            toprightHolder.src =
+                                selectedInformant === "child"
+                                    ? "assets/img/child_informant_2.png"
+                                    : "assets/img/adult_informant.png";
+                            const sleep = ms => new Promise(res => setTimeout(res, ms));
+                            const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
+                            const teachingAudioPath = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${teachingAudio}`;
+                            const teaching_audio = new Audio(teachingAudioPath);
+                            const repeatAudio = selectedInformant === "child" ? trial.repeat_sound_file_child : trial.repeat_sound_file_adult;
+                            const repeatAudioPath = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${repeatAudio}`;
+                            const repeat_audio = new Audio(repeatAudioPath);
+                            teaching_audio.play();
+                            teaching_audio.onended = () => {
+                                sleep(1000).then(() => {
+                                    repeat_audio.play();
+                                    repeat_audio.onended = () => {
+                                        setTimeout(() => {
+                                            btn.disabled = false;
+                                        }, 3000);
+                                    }
+                                });
+                            }
+                        },
+                        data: function () {
+                            const lastChoice = jsPsych.data.get().last(1).values()[0].selection;
+                            const selectedInformant = lastChoice === "child" ? "child" : "adult";
+                            const teachingAudio = selectedInformant === "child" ? trial.sound_file_child : trial.sound_file_adult;
+                            const teachingAudioPath = `assets/${lastChoice}/${trial.obj_name.toLowerCase()}/${teachingAudio}`;
+                            return {
+                                trial: trial.trial_number,
+                                object: trial.obj_name,
+                                object_type: trial.type,
+                                sound_file: teachingAudioPath,
+                            }
+                        },
+                    });
+                });
+
+                jsPsych.run(timeline);
+            })
+            .catch((e) => {
+                console.error("Error loading teaching_order.json:", e);
+                document.body.innerHTML = "<h2>Error loading data.</h2>";
+            });
+    });
+</script>
+
+</html>

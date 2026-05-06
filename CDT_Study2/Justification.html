@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jatos.js"></script>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+    <style>
+      #parent-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 20px;
+        background-color: #ffffff;
+        border-top: 1px solid #ffffff;
+        text-align: center;
+        font-size: 16px;
+        color: #000000; 
+        z-index: 9999;
+      }
+      .jspsych-content {
+        padding-bottom: 20px;
+      }
+    </style>
+</head>
+
+<body>
+</body>
+<script>
+
+
+
+    var jsPsych = initJsPsych({
+        // on_trial_start: jatos.addAbortButton,
+        on_finish: () => jatos.startNextComponent(jsPsych.data.get().json())
+    });
+
+    timeline = []
+
+    var Justification_screen1 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p> Please help us answer the next question!</p>',
+        choices: ['Next']
+    };
+    timeline.push(Justification_screen1);
+
+    var Justification_screen2 = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `<p style="font-size:100px;">?</p> ${FOOTER_JUSTIFICATION_TEST}`,
+        choices: ['Finish'],
+        on_load: () => {
+
+            const btn = document.querySelector("button");
+            btn.disabled = true;
+
+            const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                });
+            }
+
+            audio.onended = () => {
+                setTimeout(() => {
+                    btn.disabled = false;
+                }, 5000);
+            };
+        },
+    };
+    timeline.push(Justification_screen2);
+
+
+    console.log('built timeline:', timeline);
+    jatos.onLoad(() => {
+        jsPsych.run(timeline);
+    });
+
+</script>
+
+</html>

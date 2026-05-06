@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My experiment</title>
+    <script src="jspsych/dist/jspsych.js"></script>
+    <script src="jspsych/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych/dist/plugin-audio-keyboard-response.js"></script>
+    <script src="jspsych/dist/plugin-preload.js"></script>
+    <script src="jspsych/dist/plugin-instructions.js"></script>
+    <script src="scripts/util.js"></script>
+    <link href="jspsych/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheet/stylesheet.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+</body>
+<script>
+
+
+
+    var jsPsych = initJsPsych();
+
+    timeline = [];
+
+    // Screen 1: Welcome block
+
+    var welcome_block = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Start the experiment</p>',
+        choices: ['Next']
+    };
+    timeline.push(welcome_block);
+
+    // screen 2: Informant
+
+    const informat_html = '<div style="display:flex;gap:60px;justify-content:center">' +
+        '<div style="text-align:center"><img id="adult_informant" src="assets/img/adult_informant.png" style="max-width:60%"></div>' +
+        '<div style="text-align:center"><img id="child_informant" src="assets/img/child_informant.png" style="max-width:60%"></div>' +
+        '</div>';
+
+    var informat_main = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html,
+        choices: "NO_KEYS",
+        on_load: Informant_intro_people,
+    };
+    timeline.push(informat_main);
+
+    var informat_end = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: informat_html,
+        choices: [' '],
+        prompt: '<p>Press space to continue</p>',
+        response_ends_trial: true,
+
+    };
+    timeline.push(informat_end);
+
+    // Screen 3: Comprehension check
+
+    comp_check_html_tag = `<div id="choose-container" style="display:flex;gap:60px;justify-content:center;align-items:center">
+      <div style="text-align:center">
+        <img id="adult_choice" src="assets/img/adult_informant.png" alt="Adult informant" style="max-width:60%;cursor:not-allowed;opacity:0.6" />
+      </div>
+      <div style="text-align:center">
+        <img id="child_choice" src="assets/img/child_informant.png" alt="Child informant" style="max-width:60%;cursor:not-allowed;opacity:0.6" />
+      </div>
+    </div>`;
+
+    const compCheckParams = {
+        "grownup": 'assets/Experimenter voice recordings/informant_intro/exp_grown_up_compre_jb.wav',
+        "kid": 'assets/Experimenter voice recordings/informant_intro/exp_kid_compre_2_jb.wav',
+    };
+
+
+    for (let informant in compCheckParams) {
+        timeline.push({
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: comp_check_html_tag,
+            choices: "NO_KEYS",
+            on_load: function () { comp_check_load(informant, compCheckParams[informant]); }
+
+        });
+    }
+
+    //Learning Phase
+    //3. Object Presentation
+
+    (async () => {
+        const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_know_q_jb.wav";
+        const AUDIO_KNOWLEDGE_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_know_child_jb.wav";
+        const AUDIO_KNOWLEDGE_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_know_adult_jb.wav";
+        const AUDIO_LEARNING_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_learn_q_jb.wav";
+        const AUDIO_LEARNING_CHILD = "assets/Experimenter voice recordings/teaching_segment/exp_learn_child_jb.wav";
+        const AUDIO_LEARNING_ADULT = "assets/Experimenter voice recordings/teaching_segment/exp_learn_adult_jb.wav";
+
+        const teaching_order_data = await loadData('assets/teaching_order.json');
+        // Randomly select one of the order keys
+        const orderKeys = Object.keys(teaching_order_data);
+        const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+        console.log("Selected order key:", orderKey);
+        const trials = teaching_order_data[orderKey];
+
+        image_html_template = (imgPath, type_soundfile) => `
+          <div style="display:flex;justify-content:center">
+            <img id="full-image" src="assets/img/${imgPath}">
+          </div>`
+
+        trials.forEach((trial) => {
+            const imgPath = `${trial.image_id}`;
+            console.log("Using image path:", imgPath, "for", trial.obj_name);
+
+            // Stage 1: object introduction audio
+            var object_intro = {
+                type: jsPsychHtmlKeyboardResponse,
+                stimulus: image_html_template(imgPath, trial.type_soundfile),
+                choices: "NO_KEYS",
+                on_load: function () { play_object_intro(trial.type_soundfile); },
+                data: { trial_type: "stage_1", obj_name: trial.obj_name }
+            };
+            // push stage 1: object introduction (plays its own audio)
+            timeline.push(object_intro);
+
+            //push the knowledge-attribution sequence for this object (flattened)
+            timeline.push(...build_common_sequence(
+                trial.obj_name,
+                'knowledge',
+                imgPath,
+                AUDIO_KNOWLEDGE_QUESTION,
+                AUDIO_KNOWLEDGE_CHILD,
+                AUDIO_KNOWLEDGE_ADULT
+            ));
+
+            //push the learning-preference sequence for this object (flattened) 
+            timeline.push(...build_common_sequence(
+                trial.obj_name,
+                'learning',
+                imgPath,
+                AUDIO_LEARNING_QUESTION,
+                AUDIO_LEARNING_CHILD,
+                AUDIO_LEARNING_ADULT
+            ));
+
+            const lastChoice = "adult";
+            async (params) => {
+                lastChoice = jsPsych.data.get().last(1).values()[0].selection;
+
+            }
+            //console.log("Last choice for teaching trial:", lastChoice);
+
+            // Teaching audio + next button
+            timeline.push(...teachingTrial(trial, imgPath, lastChoice));
+
+            // Repeat name trial
+            timeline.push(createRepeatNameTrial(trial, imgPath, lastChoice))
+
+
+
+        });
+    })();
+
+
+    (async () => {
+        const test_order_data = await loadData('assets/test_order.json');
+        // Randomly select one of the order keys
+        const orderKeys = Object.keys(test_order_data);
+        const orderKey = orderKeys[Math.floor(Math.random() * orderKeys.length)];
+        console.log("Selected test order key:", orderKey);
+        const test_trials = test_order_data[orderKey];
+
+        test_trials.forEach((trial) => {
+            const imgPath = `${trial.image_id}`;
+            console.log("Using test image path:", imgPath, "for", trial.obj_name);
+
+            timeline.push(...createTestTrial(trial));
+        });
+    })();
+
+    (async () => {
+
+        var Justification_screen1 = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: '<p>Exploratory Justification Question</p>',
+            choices: ['Next']
+        };
+        timeline.push(Justification_screen1);
+
+        var Justification_screen2 = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: '<p style="font-size:100px;">?</p>',
+            choices: ['Finish'],
+            on_load: () => {
+                const audio = new Audio("assets/Experimenter voice recordings/informant_intro/exp_justify_q_2_jb.wav");
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // autoplay blocked: user gesture required — nothing to do here; audio may be started manually
+                    });
+                }
+                audio.onended = () => jsPsych.finishTrial();
+            },
+        };
+        timeline.push(Justification_screen2);
+
+
+    })();
+
+    (async () => {
+        console.log('built timeline:', timeline);
+        jsPsych.run({
+            timeline: timeline,
+            //on_finish: function () { jsPsych.data.displayData(); }
+        });
+    })();
+
+</script>
+
+</html>
