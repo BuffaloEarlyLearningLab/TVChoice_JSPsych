@@ -1,2 +1,8 @@
 NewPreSchool/sync_jatos.sh
 .DS_Store
+
+# Claude / OpenClaude
+.openclaude/
+CLAUDE.md
+**/CLAUDE.md
+CDT_Study2/sync_jatos.sh

@@ -76,7 +76,7 @@
             informantPosition: informantPosition
         });
 
-        fetch("assets/teaching_order.json")
+        fetch("assets/teaching_order_study2.json")
             .then((r) => r.json())
             .then((teaching_order_data) => {
                 const AUDIO_KNOWLEDGE_QUESTION = "assets/Experimenter voice recordings/teaching_segment/exp_know_q_jb.wav";
@@ -203,7 +203,6 @@
                             return {
                                 trial: trial.trial_number,
                                 object: trial.obj_name,
-                                object_type: trial.type,
                                 sound_file: teachingAudioPath,
                             }
                         },

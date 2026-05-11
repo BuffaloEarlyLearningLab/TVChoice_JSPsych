@@ -490,7 +490,6 @@ function createSelectionTrial(trial, seq_type, imgPath, order) {
                         {
                             trial: trial.trial_number,
                             object: trial.obj_name,
-                            object_type: trial.type,
                             seq_type: seq_type,
                             selection: choice,
                             "audio_order": order[0] + "_then_" + order[1],
